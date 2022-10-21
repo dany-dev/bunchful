@@ -1,0 +1,8 @@
+vendor
+*.zip
+install
+.usermin
+debug.log
+*.tar.gz
+update
+uploads/cache
