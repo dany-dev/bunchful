@@ -168,6 +168,15 @@ class Router {
                 ]
             ],
 
+            'company' => [
+                'controller' => 'Company',
+                'settings' => [
+                    'menu_no_margin' => false,
+                    'body_white' => false,
+                    'ads' => true,
+                ]
+            ],
+
             'products' => [
                 'controller' => 'Products',
                 'settings' => [
@@ -251,6 +260,10 @@ class Router {
 
             'pixel-ajax' => [
                 'controller' => 'PixelAjax'
+            ],
+
+            'company-ajax' => [
+                'controller' => 'CompanyAjax'
             ],
 
             'biolink-block-ajax' => [
