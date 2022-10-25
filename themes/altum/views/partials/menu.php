@@ -62,6 +62,8 @@
                                 <a class="dropdown-item" href="<?= url('links?type=vcard') ?>"><i class="fa fa-fw fa-sm fa-id-card mr-2"></i> <?= l('links.menu.vcards') ?></a>
                             <?php endif ?>
 
+                            <a class="dropdown-item" href="<?= url('company') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('company.menu') ?></a>
+
                             <?php if(settings()->links->qr_codes_is_enabled): ?>
                                 <a class="dropdown-item" href="<?= url('qr-codes') ?>"><i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> <?= l('qr_codes.menu') ?></a>
                             <?php endif ?>
