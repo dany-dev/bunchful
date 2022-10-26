@@ -24,97 +24,6 @@
                     <button type="button" data-toggle="modal" data-target="#create_product_modal" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('products.create') ?></button>
                 <?php endif ?>
             </div>
-
-            <div class="ml-3">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-outline-secondary dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport" title="<?= l('global.export') ?>">
-                        <i class="fa fa-fw fa-sm fa-download"></i>
-                    </button>
-
-                    <div class="dropdown-menu dropdown-menu-right d-print-none">
-                        <a href="<?= url('products?' . $data->filters->get_get() . '&export=csv')  ?>" target="_blank" class="dropdown-item">
-                            <i class="fa fa-fw fa-sm fa-file-csv mr-1"></i> <?= l('global.export_csv') ?>
-                        </a>
-                        <a href="<?= url('products?' . $data->filters->get_get() . '&export=json') ?>" target="_blank" class="dropdown-item">
-                            <i class="fa fa-fw fa-sm fa-file-code mr-1"></i> <?= l('global.export_json') ?>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ml-3">
-                <div class="dropdown">
-                    <button type="button" class="btn <?= count($data->filters->get) ? 'btn-outline-primary' : 'btn-outline-secondary' ?> filters-button dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport" title="<?= l('global.filters.header') ?>">
-                        <i class="fa fa-fw fa-sm fa-filter"></i>
-                    </button>
-
-                    <div class="dropdown-menu dropdown-menu-right filters-dropdown">
-                        <div class="dropdown-header d-flex justify-content-between">
-                            <span class="h6 m-0"><?= l('global.filters.header') ?></span>
-
-                            <?php if(count($data->filters->get)): ?>
-                                <a href="<?= url('products') ?>" class="text-muted"><?= l('global.filters.reset') ?></a>
-                            <?php endif ?>
-                        </div>
-
-                        <div class="dropdown-divider"></div>
-
-                        <form action="" method="get" role="form">
-                            <div class="form-group px-4">
-                                <label for="filters_search" class="small"><?= l('global.filters.search') ?></label>
-                                <input type="search" name="search" id="filters_search" class="form-control form-control-sm" value="<?= $data->filters->search ?>" />
-                            </div>
-
-                            <div class="form-group px-4">
-                                <label for="filters_search_by" class="small"><?= l('global.filters.search_by') ?></label>
-                                <select name="search_by" id="filters_search_by" class="form-control form-control-sm">
-                                    <option value="name" <?= $data->filters->search_by == 'name' ? 'selected="selected"' : null ?>><?= l('products.input.name') ?></option>
-                                </select>
-                            </div>
-
-                            <div class="form-group px-4">
-                                <label for="filters_type" class="small"><?= l('products.input.type') ?></label>
-                                <select name="type" id="filters_type" class="form-control form-control-sm">
-                                    <option value=""><?= l('global.filters.all') ?></option>
-                                    <?php foreach(require APP_PATH . 'includes/products.php' as $product_key => $product): ?>
-                                        <option value="<?= $product_key ?>" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == $product_key ? 'selected="selected"' : null ?>><?= $product['name'] ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group px-4">
-                                <label for="filters_order_by" class="small"><?= l('global.filters.order_by') ?></label>
-                                <select name="order_by" id="filters_order_by" class="form-control form-control-sm">
-                                    <option value="datetime" <?= $data->filters->order_by == 'datetime' ? 'selected="selected"' : null ?>><?= l('global.filters.order_by_datetime') ?></option>
-                                    <option value="name" <?= $data->filters->order_by == 'name' ? 'selected="selected"' : null ?>><?= l('products.input.name') ?></option>
-                                </select>
-                            </div>
-
-                            <div class="form-group px-4">
-                                <label for="filters_order_type" class="small"><?= l('global.filters.order_type') ?></label>
-                                <select name="order_type" id="filters_order_type" class="form-control form-control-sm">
-                                    <option value="ASC" <?= $data->filters->order_type == 'ASC' ? 'selected="selected"' : null ?>><?= l('global.filters.order_type_asc') ?></option>
-                                    <option value="DESC" <?= $data->filters->order_type == 'DESC' ? 'selected="selected"' : null ?>><?= l('global.filters.order_type_desc') ?></option>
-                                </select>
-                            </div>
-
-                            <div class="form-group px-4">
-                                <label for="filters_results_per_page" class="small"><?= l('global.filters.results_per_page') ?></label>
-                                <select name="results_per_page" id="filters_results_per_page" class="form-control form-control-sm">
-                                    <?php foreach($data->filters->allowed_results_per_page as $key): ?>
-                                        <option value="<?= $key ?>" <?= $data->filters->results_per_page == $key ? 'selected="selected"' : null ?>><?= $key ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group px-4 mt-4">
-                                <button type="submit" name="submit" class="btn btn-sm btn-primary btn-block"><?= l('global.submit') ?></button>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -154,8 +63,6 @@
             </div>
         <?php endforeach ?>
 
-        <div class="mt-3"><?= $data->pagination ?></div>
-
     <?php else: ?>
         <div class="card">
             <div class="card-body">
@@ -173,7 +80,7 @@
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_update_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/universal_delete_modal_form.php', [
     'name' => 'product',
-    'resource_id' => 'product_id',
+    'resource_id' => 'id',
     'has_dynamic_resource_name' => true,
     'path' => 'products/delete'
 ]), 'modals'); ?>

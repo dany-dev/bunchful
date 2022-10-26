@@ -2437,8 +2437,15 @@ We donate 10% of sales to charity.',
 	'global.employee.already-employee' => 'This email: %s is already a company employee',
 	'global.employee.account-not-found' => 'This email: %s not found in the system!',
 	'global.employee.assign.admin' => 'Assign Company Admin',
+	'global.employee.remove.admin' => 'Remove Company Admin',
 	'global.invitation.email-send' => 'Invitation sent successfully',
 	'global.invitation.email.subject' => 'Company invitation email',
 	'global.invitation.email-body' => 'Hey there <strong>{{NAME}}</strong>,<br /><br />You have added as an employee in company! {{COMPANY_NAME}} <br /><br />Greetings from {{WEBSITE_TITLE}}.',
+	'global.remove' => 'Remove User',
+	'employee_remove_modal.header' => 'Remove Employee',
+	'employee_remove_modal.subheader' => 'Comfirm Remove Employee?',
+	'employee_assign_modal.header' => 'Assign Employee as Admin',
+	'employee_assign_modal.subheader' => 'Comfirm Assign Employee as Admin?',
+	
 
 ];

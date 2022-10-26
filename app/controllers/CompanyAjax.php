@@ -47,6 +47,11 @@ class CompanyAjax extends Controller
                     break;
 
                     /* Add Employee */
+                case 'assign_admin':
+                    $this->assign_admin();
+                    break;
+
+                    /* Add Employee */
                 case 'add_employee':
                     $this->add_employee();
                     break;
@@ -168,5 +173,81 @@ class CompanyAjax extends Controller
             }
         }
         Response::json(sprintf(l('global.employee.account-not-found'), '<strong>' . e($_POST['email']) . '</strong>'), "error");
+    }
+
+    public function delete()
+    {
+        Authentication::guard();
+
+        /* Team checks */
+        if (\Altum\Teams::is_delegated() && !\Altum\Teams::has_access('delete')) {
+            Response::json(l('global.info_message.team_no_access'), 'error');
+        }
+
+        if (empty($_POST)) {
+            Response::json(l('global.success_message.delete2'), 'error');
+        }
+
+        $employee_id = (int) $_POST['employee_id'];
+
+        if (!Csrf::check()) {
+            Response::json(l('global.error_message.invalid_csrf_token'), 'error');
+        }
+
+        if (!$company = db()->where('id', $employee_id)->getOne('company_users', ['user_id'])) {
+            Response::json(l('global.success_message.delete2'));
+        }
+
+        if (!Alerts::has_field_errors() && !Alerts::has_errors()) {
+
+            /* Delete the project */
+            db()->where('id', $employee_id)->delete('company_users');
+
+            /* Clear the cache */
+            \Altum\Cache::$adapter->deleteItemsByTag('company?user_id=' . $this->user->user_id);
+
+            Response::json(l('global.success_message.delete2'));
+        }
+
+        Response::json(l('global.employee.account-not-found'), 'error');
+    }
+
+    public function assign_admin()
+    {
+        Authentication::guard();
+
+        /* Team checks */
+        if (\Altum\Teams::is_delegated() && !\Altum\Teams::has_access('delete')) {
+            Response::json(l('global.info_message.team_no_access'), 'error');
+        }
+
+        if (empty($_POST)) {
+            Response::json(l('global.success_message.delete2'), 'error');
+        }
+
+        $employee_id = (int) $_POST['employee_id'];
+        $is_admin = (int) $_POST['is_admin'];
+
+        if (!Csrf::check()) {
+            Response::json(l('global.error_message.invalid_csrf_token'), 'error');
+        }
+
+        if (!$company = db()->where('id', $employee_id)->getOne('company_users', ['user_id'])) {
+            Response::json(l('global.success_message.delete2'));
+        }
+
+        if (!Alerts::has_field_errors() && !Alerts::has_errors()) {
+
+            db()->where('id', $employee_id)->update('company_users', [
+                'is_admin' => !$is_admin,
+            ]);
+
+            /* Clear the cache */
+            \Altum\Cache::$adapter->deleteItemsByTag('company?user_id=' . $this->user->user_id);
+
+            Response::json(l('global.success_message.delete2'));
+        }
+
+        Response::json(l('global.employee.account-not-found'), 'error');
     }
 }

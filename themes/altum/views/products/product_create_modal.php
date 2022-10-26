@@ -25,7 +25,7 @@
 
                     <div class="form-group">
                         <label for="create_product"><i class="fa fa-fw fa-code fa-sm text-muted mr-1"></i> <?= l('products.input.product') ?></label>
-                        <input type="text" id="create_product" name="product" class="form-control" value="" required="required" />
+                        <input type="text" id="create_product" name="product_id" class="form-control" value="" required="required" />
                         <small class="text-muted form-text"><?= l('products.input.product_help') ?></small>
                     </div>
 

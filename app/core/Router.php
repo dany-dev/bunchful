@@ -12,7 +12,8 @@ namespace Altum\Routing;
 use Altum\Database\Database;
 use Altum\Language;
 
-class Router {
+class Router
+{
     public static $params = [];
     public static $original_request = '';
     public static $language_code = '';
@@ -262,6 +263,10 @@ class Router {
                 'controller' => 'PixelAjax'
             ],
 
+            'product-ajax' => [
+                'controller' => 'ProductAjax'
+            ],
+
             'company-ajax' => [
                 'controller' => 'CompanyAjax'
             ],
@@ -437,8 +442,7 @@ class Router {
 
             'plan' => [
                 'controller' => 'Plan',
-                'settings' => [
-                ]
+                'settings' => []
             ],
 
             'pay' => [
@@ -978,29 +982,31 @@ class Router {
     ];
 
 
-    public static function parse_url() {
+    public static function parse_url()
+    {
 
         $params = self::$params;
 
-        if(isset($_GET['altum'])) {
+        if (isset($_GET['altum'])) {
             $params = explode('/', filter_var(rtrim($_GET['altum'], '/'), FILTER_SANITIZE_STRING));
         }
 
         self::$params = $params;
 
         return $params;
-
     }
 
-    public static function get_params() {
+    public static function get_params()
+    {
 
         return self::$params = array_values(self::$params);
     }
 
-    public static function parse_language() {
+    public static function parse_language()
+    {
 
         /* Check for potential language set in the first parameter */
-        if(!empty(self::$params[0]) && in_array(self::$params[0], Language::$active_languages)) {
+        if (!empty(self::$params[0]) && in_array(self::$params[0], Language::$active_languages)) {
 
             /* Set the language */
             $language_code = filter_var(self::$params[0], FILTER_SANITIZE_STRING);
@@ -1010,12 +1016,11 @@ class Router {
             /* Unset the parameter so that it wont be used further */
             unset(self::$params[0]);
             self::$params = array_values(self::$params);
-
         }
-
     }
 
-    public static function parse_controller() {
+    public static function parse_controller()
+    {
 
         self::$original_request = filter_var(implode('/', self::$params), FILTER_SANITIZE_STRING);
 
@@ -1023,12 +1028,12 @@ class Router {
         $original_url_host = parse_url(url(), PHP_URL_HOST);
         $request_url_host = filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_STRING);
 
-        if($original_url_host != $request_url_host) {
+        if ($original_url_host != $request_url_host) {
 
             /* Make sure the custom domain is attached */
             $domain = (new \Altum\Models\Domain())->get_domain_by_host($request_url_host);;
 
-            if($domain && $domain->is_enabled) {
+            if ($domain && $domain->is_enabled) {
                 self::$controller_key = 'link';
                 self::$controller = 'Link';
                 self::$path = 'l';
@@ -1036,52 +1041,48 @@ class Router {
                 /* Set some route data */
                 self::$data['domain'] = $domain;
             }
-
         }
 
         /* Check for potential other paths than the default one (admin panel) */
-        if(!empty(self::$params[0])) {
+        if (!empty(self::$params[0])) {
 
-            if(in_array(self::$params[0], ['admin', 'admin-api', 'l', 'api']) && $original_url_host == $request_url_host) {
+            if (in_array(self::$params[0], ['admin', 'admin-api', 'l', 'api']) && $original_url_host == $request_url_host) {
                 self::$path = self::$params[0];
 
                 unset(self::$params[0]);
 
                 self::$params = array_values(self::$params);
             }
-
         }
 
-        if(!empty(self::$params[0])) {
+        if (!empty(self::$params[0])) {
 
-            if(array_key_exists(self::$params[0], self::$routes[self::$path]) && file_exists(APP_PATH . 'controllers/' . (self::$path != '' ? self::$path . '/' : null) . self::$routes[self::$path][self::$params[0]]['controller'] . '.php')) {
+            if (array_key_exists(self::$params[0], self::$routes[self::$path]) && file_exists(APP_PATH . 'controllers/' . (self::$path != '' ? self::$path . '/' : null) . self::$routes[self::$path][self::$params[0]]['controller'] . '.php')) {
 
                 self::$controller_key = self::$params[0];
 
                 unset(self::$params[0]);
-
             } else {
 
                 /* Try to check if the link exists via the cache */
                 $cache_instance = \Altum\Cache::$adapter->getItem('link?url=' . md5(self::$params[0]) . (isset(self::$data['domain']) ? '&domain_id=' . self::$data['domain']->domain_id : null));
 
                 /* Set cache if not existing */
-                if(!$cache_instance->get()) {
+                if (!$cache_instance->get()) {
 
                     /* Get data from the database */
-                    if(isset(self::$data['domain'])) {
+                    if (isset(self::$data['domain'])) {
                         $link = db()->where('url', self::$params[0])->where('domain_id', self::$data['domain']->domain_id)->getOne('links');
                     } else {
                         $link = db()->where('url', self::$params[0])->where('domain_id', 0)->getOne('links');
                     }
 
-                    if($link) {
+                    if ($link) {
                         \Altum\Cache::$adapter->save($cache_instance->set($link)->expiresAfter(CACHE_DEFAULT_SECONDS)->addTag('link_id=' . $link->link_id));
 
                         /* Set some route data */
                         self::$data['link'] = $link;
                     }
-
                 } else {
 
                     /* Get cache */
@@ -1089,45 +1090,38 @@ class Router {
 
                     /* Set some route data */
                     self::$data['link'] = $link;
-
                 }
 
 
                 /* Check if there is any link available in the database */
-                if($link) {
+                if ($link) {
 
                     self::$controller_key = 'link';
                     self::$controller = 'Link';
                     self::$path = 'l';
-
                 } else {
 
                     /* Check for a custom domain 404 redirect */
-                    if(isset(self::$data['domain']) && self::$data['domain']->custom_not_found_url) {
+                    if (isset(self::$data['domain']) && self::$data['domain']->custom_not_found_url) {
                         header('Location: ' . self::$data['domain']->custom_not_found_url);
                         die();
-                    }
-
-                    else {
+                    } else {
                         /* Not found controller */
                         self::$path = '';
                         self::$controller_key = 'notfound';
                     }
-
                 }
-
             }
-
         }
 
         /* Check for a custom index url redirect in case there is no link requested  */
-        if(!isset(self::$params[0]) && !isset(self::$params[1]) && self::$path == 'l' && $original_url_host != $request_url_host && isset(self::$data['domain']) && self::$data['domain']->custom_index_url) {
+        if (!isset(self::$params[0]) && !isset(self::$params[1]) && self::$path == 'l' && $original_url_host != $request_url_host && isset(self::$data['domain']) && self::$data['domain']->custom_index_url) {
             header('Location: ' . self::$data['domain']->custom_index_url);
             die();
         }
 
         /* Save the current controller */
-        if(!isset(self::$routes[self::$path][self::$controller_key])) {
+        if (!isset(self::$routes[self::$path][self::$controller_key])) {
             /* Not found controller */
             self::$path = '';
             self::$controller_key = 'notfound';
@@ -1135,7 +1129,7 @@ class Router {
         self::$controller = self::$routes[self::$path][self::$controller_key]['controller'];
 
         /* Admin path */
-        if(self::$path == 'admin' && !isset(self::$routes[self::$path][self::$controller_key]['settings'])) {
+        if (self::$path == 'admin' && !isset(self::$routes[self::$path][self::$controller_key]['settings'])) {
             self::$routes[self::$path][self::$controller_key]['settings'] = [
                 'authentication' => 'admin',
                 'allow_team_access' => false,
@@ -1143,15 +1137,15 @@ class Router {
         }
 
         /* Make sure we also save the controller specific settings */
-        if(isset(self::$routes[self::$path][self::$controller_key]['settings'])) {
+        if (isset(self::$routes[self::$path][self::$controller_key]['settings'])) {
             self::$controller_settings = array_merge(self::$controller_settings, self::$routes[self::$path][self::$controller_key]['settings']);
         }
 
         return self::$controller;
-
     }
 
-    public static function get_controller($controller_name, $path = '') {
+    public static function get_controller($controller_name, $path = '')
+    {
 
         require_once APP_PATH . 'controllers/' . ($path != '' ? $path . '/' : null) . $controller_name . '.php';
 
@@ -1164,25 +1158,23 @@ class Router {
         return $controller;
     }
 
-    public static function parse_method($controller) {
+    public static function parse_method($controller)
+    {
 
         $method = self::$method;
 
         /* Make sure to check the class method if set in the url */
-        if(isset(self::get_params()[0]) && method_exists($controller, self::get_params()[0])) {
+        if (isset(self::get_params()[0]) && method_exists($controller, self::get_params()[0])) {
 
             /* Make sure the method is not private */
             $reflection = new \ReflectionMethod($controller, self::get_params()[0]);
-            if($reflection->isPublic()) {
+            if ($reflection->isPublic()) {
                 $method = self::get_params()[0];
 
                 unset(self::$params[0]);
             }
-
         }
 
         return self::$method = $method;
-
     }
-
 }

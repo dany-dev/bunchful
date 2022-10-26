@@ -35,10 +35,11 @@
 
     <?php if (count($data->companyEmployees)) : ?>
         <?php foreach ($data->companyEmployees as $row) : ?>
-            <div class="custom-row mb-4" data-pixel-id="<?= $row->pixel_id ?>">
+            <div class="custom-row mb-4" data-id="<?= $row->id ?>">
                 <div class="row">
                     <div class="col-4 col-lg-4 d-flex align-items-center">
                         <div class="font-weight-bold text-truncate">
+                            <?php if($row->is_admin) { ?><i class="fa fa-fw fa-user-secret"></i><?php } ?>
                             <a><?= $row->email ?></a>
                         </div>
                     </div>
@@ -58,8 +59,8 @@
                             </button>
 
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" data-toggle="modal" data-target="#pixel_update_modal" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?= l('global.employee.assign.admin') ?></a>
-                                <a href="#" data-toggle="modal" data-target="#pixel_delete_modal" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.delete') ?></a>
+                                <a href="#" data-toggle="modal" data-target="#employee_assign_modal" data-employee-id = "<?= $row->id?>" data-employee-admin = "<?= $row->is_admin?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?php if($row->is_admin) { echo l('global.employee.remove.admin'); } else { echo l('global.employee.assign.admin'); } ?></a>
+                                <a href="#" data-toggle="modal" data-target="#employee_remove_modal" data-employee-id = "<?= $row->id?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.remove') ?></a>
                             </div>
                         </div>
                     </div>
@@ -81,3 +82,5 @@
 
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/create_company_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/add_employee_modal.php'), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/assign_employee_admin_modal.php'), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/remove_employee_modal.php'), 'modals'); ?>

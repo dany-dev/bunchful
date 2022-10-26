@@ -1,31 +1,29 @@
 <?php defined('ALTUMCODE') || die() ?>
 
-<div class="modal fade" id="product_delete_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="employee_assign_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fa fa-fw fa-sm fa-trash-alt text-muted mr-2"></i>
-                    <?= l('product_delete_modal.header') ?>
-                </h5>
+                <h5 class="modal-title"><?= l('employee_assign_modal.header') ?></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="<?= l('global.close') ?>">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
             <div class="modal-body">
-                <form name="product_delete" method="post" role="form">
+                <form name="employee_assign" method="post" role="form">
                     <input type="hidden" name="token" value="<?= \Altum\Middlewares\Csrf::get() ?>" required="required" />
-                    <input type="hidden" name="request_type" value="delete" />
-                    <input type="hidden" name="product_id" value="" />
+                    <input type="hidden" name="request_type" value="assign_admin" />
+                    <input type="hidden" name="employee_id" value="" />
+                    <input type="hidden" name="is_admin" value="" />
 
                     <div class="notification-container"></div>
 
-                    <p class="text-muted"><?= l('product_delete_modal.subheader') ?></p>
+                    <p class="text-muted"><?= l('employee_assign_modal.subheader') ?></p>
 
-                    <div class="mt-4">
-                        <button type="submit" name="submit" class="btn btn-lg btn-block btn-danger" data-is-ajax><?= l('global.delete') ?></button>
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary" data-is-ajax><?= l('global.submit') ?></button>
                     </div>
                 </form>
             </div>
@@ -37,20 +35,22 @@
 <?php ob_start() ?>
 <script>
     /* On modal show load new data */
-    $('#product_delete_modal').on('show.bs.modal', event => {
-        let product_id = $(event.relatedTarget).data('product-id');
+    $('#employee_assign_modal').on('show.bs.modal', event => {
+        let employee_id = $(event.relatedTarget).data('employee-id');
+        let is_admin = $(event.relatedTarget).data('employee-admin');
 
-        $(event.currentTarget).find('input[name="product_id"]').val(product_id);
+        $(event.currentTarget).find('input[name="employee_id"]').val(employee_id);
+        $(event.currentTarget).find('input[name="is_admin"]').val(is_admin);
     });
 
-    $('form[name="product_delete"]').on('submit', event => {
+    $('form[name="employee_assign"]').on('submit', event => {
         let notification_container = event.currentTarget.querySelector('.notification-container');
         notification_container.innerHTML = '';
         pause_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));
 
         $.ajax({
             type: 'POST',
-            url: `${url}product-ajax`,
+            url: `${url}company-ajax`,
             data: $(event.currentTarget).serialize(),
             dataType: 'json',
             success: (data) => {
@@ -62,16 +62,13 @@
 
                 else if(data.status == 'success') {
 
+                    /* Hide modal */
+                    $('#employee_assign_modal').modal('hide');
+
                     /* Clear input values */
-                    $(event.currentTarget).find('input[name="product_id"]').val('');
+                    $('form[name="employee_assign"] input').val('');
 
-                    display_notifications(data.message, 'success', notification_container);
-
-                    setTimeout(() => {
-                        $('#product_delete_modal').modal('hide');
-                        redirect(`products`);
-                    }, 500);
-
+                    redirect(`company`);
                 }
             },
             error: () => {
