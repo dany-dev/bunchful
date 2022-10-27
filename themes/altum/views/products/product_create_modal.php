@@ -30,13 +30,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="create_link_url"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('products.input.create_link_url') ?></label>
-                        <input type="text" id="create_link_url" class="form-control" name="link_url" required="required" />
+                        <label for="product_link"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('products.input.product_link') ?></label>
+                        <input type="text" id="product_link" class="form-control" name="product_link" required="required" />
                     </div>
 
                     <div class="form-group">
-                        <label for="create_auto_generated_link_url"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('products.input.auto_generated_link_url') ?></label>
-                        <input type="text" id="create_auto_generated_link_url" class="form-control" name="auto_generated_link_url" required="required" readonly/>
+                        <label for="create_auto_generated_link"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('products.input.auto_generated_link') ?></label>
+                        <input type="text" id="create_auto_generated_link" class="form-control" name="auto_generated_link" required="required" readonly />
                     </div>
 
                     <div class="text-center mt-4">

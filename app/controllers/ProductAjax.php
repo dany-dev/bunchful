@@ -9,6 +9,7 @@
 
 namespace Altum\Controllers;
 
+use Altum\Alerts;
 use Altum\Database\Database;
 use Altum\Date;
 use Altum\Middlewares\Authentication;
@@ -57,7 +58,7 @@ class ProductAjax extends Controller
         }
 
         $_POST['name'] = trim(Database::clean_string($_POST['name']));
-        $_POST['product'] = trim(Database::clean_string($_POST['product']));
+        $_POST['product_id'] = trim(Database::clean_string($_POST['product_id']));
         $_POST['link_url'] = trim(Database::clean_string($_POST['link_url']));
         $_POST['auto_generated_link_url'] = trim(Database::clean_string($_POST['auto_generated_link_url']));
 
@@ -77,8 +78,8 @@ class ProductAjax extends Controller
             'user_id' => $this->user->user_id,
             'name' => $_POST['name'],
             'product_id' => $_POST['product_id'],
-            'product_link' => $_POST['link_url'],
-            'auto_generated_link' => $_POST['auto_generated_link_url'] ?? 'aasd',
+            'product_link' => $_POST['product_link'],
+            'auto_generated_link' => $_POST['auto_generated_link'] ?? 'aasd',
         ]);
 
         /* Clear the cache */
@@ -95,9 +96,11 @@ class ProductAjax extends Controller
             Response::json(l('global.info_message.team_no_access'), 'error');
         }
 
-        $_POST['project_id'] = (int) $_POST['project_id'];
+        $_POST['id'] = (int) $_POST['id'];
         $_POST['name'] = trim(Database::clean_string($_POST['name']));
-        $_POST['color'] = !preg_match('/#([A-Fa-f0-9]{3,4}){1,2}\b/i', $_POST['color']) ? '#000' : $_POST['color'];
+        $_POST['product_id'] = trim(Database::clean_string($_POST['product_id']));
+        $_POST['link_url'] = trim(Database::clean_string($_POST['link_url']));
+        $_POST['auto_generated_link_url'] = trim(Database::clean_string($_POST['auto_generated_link_url']));
 
         /* Check for possible errors */
         if (empty($_POST['name'])) {
@@ -105,14 +108,15 @@ class ProductAjax extends Controller
         }
 
         /* Insert to database */
-        db()->where('project_id', $_POST['project_id'])->where('user_id', $this->user->user_id)->update('projects', [
+        db()->where('id', $_POST['id'])->update('products', [
             'name' => $_POST['name'],
-            'color' => $_POST['color'],
-            'last_datetime' => Date::$date,
+            'product_id' => $_POST['product_id'],
+            'product_link' => $_POST['product_link'],
+            'auto_generated_link' => $_POST['auto_generated_link'] ?? 'aasd',
         ]);
 
         /* Clear the cache */
-        \Altum\Cache::$adapter->deleteItem('projects?user_id=' . $this->user->user_id);
+        \Altum\Cache::$adapter->deleteItem('products?user_id=' . $this->user->user_id);
 
         /* Set a nice success message */
         Response::json(sprintf(l('global.success_message.update1'), '<strong>' . e($_POST['name']) . '</strong>'));
@@ -132,6 +136,7 @@ class ProductAjax extends Controller
         }
 
         $product_id = (int) $_POST['product_id'];
+
 
         if (!Csrf::check()) {
             Response::json(l('global.error_message.invalid_csrf_token'), 'error');

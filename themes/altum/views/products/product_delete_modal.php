@@ -15,7 +15,7 @@
             </div>
 
             <div class="modal-body">
-                <form name="product_delete" method="post" role="form">
+                <form name="product_remove" method="post" role="form">
                     <input type="hidden" name="token" value="<?= \Altum\Middlewares\Csrf::get() ?>" required="required" />
                     <input type="hidden" name="request_type" value="delete" />
                     <input type="hidden" name="product_id" value="" />
@@ -38,12 +38,12 @@
 <script>
     /* On modal show load new data */
     $('#product_delete_modal').on('show.bs.modal', event => {
-        let product_id = $(event.relatedTarget).data('product-id');
+        let product_id = $(event.relatedTarget).data('id');
 
         $(event.currentTarget).find('input[name="product_id"]').val(product_id);
     });
 
-    $('form[name="product_delete"]').on('submit', event => {
+    $('form[name="product_remove"]').on('submit', event => {
         let notification_container = event.currentTarget.querySelector('.notification-container');
         notification_container.innerHTML = '';
         pause_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));

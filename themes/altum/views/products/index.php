@@ -54,8 +54,8 @@
                             </button>
 
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" data-toggle="modal" data-target="#product_update_modal" data-product-id="<?= $row->product_id ?>" data-name="<?= $row->name ?>" data-type="<?= $row->type ?>" data-product="<?= $row->product ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?= l('global.edit') ?></a>
-                                <a href="#" data-toggle="modal" data-target="#product_delete_modal" data-product-id="<?= $row->product_id ?>" data-resource-name="<?= $row->name ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.delete') ?></a>
+                                <a href="#" data-toggle="modal" data-target="#product_update_modal" data-id="<?= $row->id ?>" data-name="<?= $row->name ?>" data-product-id="<?= $row->product_id ?>" data-product-link="<?= $row->product_link ?>" data-auto-generated-link="<?= $row->auto_generated_link ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?= l('global.edit') ?></a>
+                                <a href="#" data-toggle="modal" data-target="#product_delete_modal" data-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.delete') ?></a>
                             </div>
                         </div>
                     </div>
@@ -78,9 +78,4 @@
 
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_create_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_update_modal.php'), 'modals'); ?>
-<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/universal_delete_modal_form.php', [
-    'name' => 'product',
-    'resource_id' => 'id',
-    'has_dynamic_resource_name' => true,
-    'path' => 'products/delete'
-]), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_delete_modal.php'), 'modals'); ?>
