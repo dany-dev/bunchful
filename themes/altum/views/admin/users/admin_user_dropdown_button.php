@@ -7,6 +7,13 @@
 
     <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item" href="admin/user-view/<?= $data->id ?>"><i class="fa fa-fw fa-sm fa-eye mr-2"></i> <?= l('global.view') ?></a>
+        <?php if ($data->plan == 'Enterprise') { ?>
+            <?php if ($data->is_owner) { ?>
+                <a class="dropdown-item" href="admin/assign-owner/<?= $data->id ?>"><i class="fa fa-fw fa-sm fa-user mr-2"></i> <?= l('global.remove_global_owner') ?></a>
+            <?php } else { ?>
+                <a class="dropdown-item" href="admin/assign-owner/<?= $data->id ?>"><i class="fa fa-fw fa-sm fa-user mr-2"></i> <?= l('global.assign_global_owner') ?></a>
+            <?php } ?>
+        <?php } ?>
         <a class="dropdown-item" href="admin/user-update/<?= $data->id ?>"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?= l('global.edit') ?></a>
         <a href="#" data-toggle="modal" data-target="#user_delete_modal" data-user-id="<?= $data->id ?>" data-resource-name="<?= $data->resource_name ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.delete') ?></a>
         <a href="#" data-toggle="modal" data-target="#user_login_modal" data-user-id="<?= $data->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-sign-in-alt mr-2"></i> <?= l('global.login') ?></a>

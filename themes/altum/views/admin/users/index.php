@@ -247,7 +247,7 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-end">
-                            <?= include_view(THEME_PATH . 'views/admin/users/admin_user_dropdown_button.php', ['id' => $row->user_id, 'resource_name' => $row->name]) ?>
+                            <?= include_view(THEME_PATH . 'views/admin/users/admin_user_dropdown_button.php', ['id' => $row->user_id, 'resource_name' => $row->name, 'plan' => $data->plans[$row->plan_id]->name, 'is_owner' => $row->is_global_owner]) ?>
                         </div>
                     </td>
                 </tr>

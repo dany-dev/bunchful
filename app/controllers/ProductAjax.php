@@ -11,10 +11,17 @@ namespace Altum\Controllers;
 
 use Altum\Alerts;
 use Altum\Database\Database;
-use Altum\Date;
 use Altum\Middlewares\Authentication;
 use Altum\Middlewares\Csrf;
 use Altum\Response;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProductAjax extends Controller
 {
@@ -58,9 +65,9 @@ class ProductAjax extends Controller
         }
 
         $_POST['name'] = trim(Database::clean_string($_POST['name']));
-        $_POST['product_id'] = trim(Database::clean_string($_POST['product_id']));
-        $_POST['link_url'] = trim(Database::clean_string($_POST['link_url']));
-        $_POST['auto_generated_link_url'] = trim(Database::clean_string($_POST['auto_generated_link_url']));
+        $_POST['product_id'] = trim(Database::clean_string($_POST['product_id'] ?? ''));
+        $_POST['product_link'] = trim(Database::clean_string($_POST['product_link']));
+        $_POST['auto_generated_link'] = trim(Database::clean_string($_POST['auto_generated_link']));
 
         /* Check for possible errors */
         if (empty($_POST['name'])) {
@@ -74,13 +81,35 @@ class ProductAjax extends Controller
         }
 
         /* Insert to database */
-        db()->insert('products', [
+        $insertedId = db()->insert('products', [
             'user_id' => $this->user->user_id,
             'name' => $_POST['name'],
             'product_id' => $_POST['product_id'],
             'product_link' => $_POST['product_link'],
-            'auto_generated_link' => $_POST['auto_generated_link'] ?? 'aasd',
+            'auto_generated_link' => $_POST['auto_generated_link'] ?? '',
         ]);
+
+        $result = Builder::create()
+            ->writer(new PngWriter())
+            ->writerOptions([])
+            ->data($_POST['auto_generated_link'])
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+            ->size(300)
+            ->margin(10)
+            ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
+            ->labelText($_POST['name'])
+            ->labelFont(new NotoSans(20))
+            ->labelAlignment(new LabelAlignmentCenter())
+            ->validateResult(false)
+            ->build();
+
+        if (!file_exists('uploads/qr_codes'))
+            mkdir('uploads/qr_codes');
+        if (!file_exists('uploads/qr_codes/' . $insertedId))
+            mkdir('uploads/qr_codes/' . $insertedId);
+
+        $result->saveToFile('uploads/qr_codes/' . $insertedId . '/image.png');
 
         /* Clear the cache */
         \Altum\Cache::$adapter->deleteItem('products?user_id=' . $this->user->user_id);
@@ -98,9 +127,8 @@ class ProductAjax extends Controller
 
         $_POST['id'] = (int) $_POST['id'];
         $_POST['name'] = trim(Database::clean_string($_POST['name']));
-        $_POST['product_id'] = trim(Database::clean_string($_POST['product_id']));
-        $_POST['link_url'] = trim(Database::clean_string($_POST['link_url']));
-        $_POST['auto_generated_link_url'] = trim(Database::clean_string($_POST['auto_generated_link_url']));
+        $_POST['product_id'] = trim(Database::clean_string($_POST['product_id'] ?? ''));
+        $_POST['product_link'] = trim(Database::clean_string($_POST['product_link']));
 
         /* Check for possible errors */
         if (empty($_POST['name'])) {
@@ -111,9 +139,31 @@ class ProductAjax extends Controller
         db()->where('id', $_POST['id'])->update('products', [
             'name' => $_POST['name'],
             'product_id' => $_POST['product_id'],
-            'product_link' => $_POST['product_link'],
-            'auto_generated_link' => $_POST['auto_generated_link'] ?? 'aasd',
+            'product_link' => $_POST['product_link']
         ]);
+
+
+        $result = Builder::create()
+            ->writer(new PngWriter())
+            ->writerOptions([])
+            ->data($_POST['auto_generated_link'])
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+            ->size(300)
+            ->margin(10)
+            ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
+            ->labelText($_POST['name'])
+            ->labelFont(new NotoSans(20))
+            ->labelAlignment(new LabelAlignmentCenter())
+            ->validateResult(false)
+            ->build();
+
+        if (!file_exists('uploads/qr_codes'))
+            mkdir('uploads/qr_codes');
+        if (!file_exists('uploads/qr_codes/' . $_POST['id']))
+            mkdir('uploads/qr_codes/' . $_POST['id']);
+
+        $result->saveToFile('uploads/qr_codes/' . $_POST['id'] . '/image.png');
 
         /* Clear the cache */
         \Altum\Cache::$adapter->deleteItem('products?user_id=' . $this->user->user_id);

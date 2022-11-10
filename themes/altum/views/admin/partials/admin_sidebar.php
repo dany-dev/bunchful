@@ -3,9 +3,9 @@
 <section class="admin-sidebar">
     <div class="admin-sidebar-title">
         <a href="<?= url() ?>" class="text-decoration-none text-truncate">
-            <?php if(settings()->main->{'logo_' . \Altum\ThemeStyle::get()} != ''): ?>
+            <?php if (settings()->main->{'logo_' . \Altum\ThemeStyle::get()} != '') : ?>
                 <img src="<?= UPLOADS_FULL_URL . 'main/' . settings()->main->{'logo_' . \Altum\ThemeStyle::get()} ?>" class="img-fluid admin-navbar-logo" alt="<?= l('global.accessibility.logo_alt') ?>" />
-            <?php else: ?>
+            <?php else : ?>
                 <span class="admin-navbar-brand"><?= settings()->main->title ?></span>
             <?php endif ?>
         </a>
@@ -74,6 +74,14 @@
                 </div>
             </a>
         </li>
+        <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminProducts']) ? 'active' : null ?>">
+            <a class="nav-link d-flex flex-row" href="<?= url('admin/products') ?>">
+                <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-bars"></i></div>
+                <div class="col">
+                    <span class="d-inline"><?= l('admin_products.menu') ?></span>
+                </div>
+            </a>
+        </li>
         <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminQrCodes']) ? 'active' : null ?>">
             <a class="nav-link d-flex flex-row" href="<?= url('admin/qr-codes') ?>">
                 <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-qrcode"></i></div>
@@ -92,7 +100,7 @@
             </a>
         </li>
 
-        <?php if(\Altum\Plugin::is_active('teams')): ?>
+        <?php if (\Altum\Plugin::is_active('teams')) : ?>
             <li class="<?= \Altum\Routing\Router::$controller == 'AdminTeams' ? 'active' : null ?>">
                 <a class="nav-link d-flex flex-row" href="<?= url('admin/teams') ?>">
                     <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-user-shield"></i></div>
@@ -172,43 +180,43 @@
             </a>
         </li>
 
-        <?php if(in_array(settings()->license->type, ['SPECIAL','Extended License'])): ?>
-        <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminCodes', 'AdminCodeCreate', 'AdminCodeUpdate']) ? 'active' : null ?>">
-            <a class="nav-link d-flex flex-row" href="<?= url('admin/codes') ?>">
-                <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-tags"></i></div>
-                <div class="col">
-                    <span class="d-inline"><?= l('admin_codes.menu') ?></span>
-                </div>
-            </a>
-        </li>
-
-        <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminTaxes', 'AdminTaxCreate', 'AdminTaxUpdate']) ? 'active' : null ?>">
-            <a class="nav-link d-flex flex-row" href="<?= url('admin/taxes') ?>">
-                <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-paperclip"></i></div>
-                <div class="col">
-                    <span class="d-inline"><?= l('admin_taxes.menu') ?></span>
-                </div>
-            </a>
-        </li>
-
-        <li class="<?= \Altum\Routing\Router::$controller == 'AdminPayments' ? 'active' : null ?>">
-            <a class="nav-link d-flex flex-row" href="<?= url('admin/payments') ?>">
-                <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-credit-card"></i></div>
-                <div class="col">
-                    <span class="d-inline"><?= l('admin_payments.menu') ?></span>
-                </div>
-            </a>
-        </li>
-
-            <?php if(\Altum\Plugin::is_active('affiliate')): ?>
-            <li class="<?= \Altum\Routing\Router::$controller == 'AdminAffiliatesWithdrawals' ? 'active' : null ?>">
-                <a class="nav-link d-flex flex-row" href="<?= url('admin/affiliates-withdrawals') ?>">
-                    <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-wallet"></i></div>
+        <?php if (in_array(settings()->license->type, ['SPECIAL', 'Extended License'])) : ?>
+            <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminCodes', 'AdminCodeCreate', 'AdminCodeUpdate']) ? 'active' : null ?>">
+                <a class="nav-link d-flex flex-row" href="<?= url('admin/codes') ?>">
+                    <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-tags"></i></div>
                     <div class="col">
-                        <span class="d-inline"><?= l('admin_affiliates_withdrawals.menu') ?></span>
+                        <span class="d-inline"><?= l('admin_codes.menu') ?></span>
                     </div>
                 </a>
             </li>
+
+            <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminTaxes', 'AdminTaxCreate', 'AdminTaxUpdate']) ? 'active' : null ?>">
+                <a class="nav-link d-flex flex-row" href="<?= url('admin/taxes') ?>">
+                    <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-paperclip"></i></div>
+                    <div class="col">
+                        <span class="d-inline"><?= l('admin_taxes.menu') ?></span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="<?= \Altum\Routing\Router::$controller == 'AdminPayments' ? 'active' : null ?>">
+                <a class="nav-link d-flex flex-row" href="<?= url('admin/payments') ?>">
+                    <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-credit-card"></i></div>
+                    <div class="col">
+                        <span class="d-inline"><?= l('admin_payments.menu') ?></span>
+                    </div>
+                </a>
+            </li>
+
+            <?php if (\Altum\Plugin::is_active('affiliate')) : ?>
+                <li class="<?= \Altum\Routing\Router::$controller == 'AdminAffiliatesWithdrawals' ? 'active' : null ?>">
+                    <a class="nav-link d-flex flex-row" href="<?= url('admin/affiliates-withdrawals') ?>">
+                        <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-wallet"></i></div>
+                        <div class="col">
+                            <span class="d-inline"><?= l('admin_affiliates_withdrawals.menu') ?></span>
+                        </div>
+                    </a>
+                </li>
             <?php endif ?>
         <?php endif ?>
 

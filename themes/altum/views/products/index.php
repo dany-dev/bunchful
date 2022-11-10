@@ -16,31 +16,41 @@
 
         <div class="col-12 col-lg-auto d-flex">
             <div>
-                <?php if($this->user->plan_settings->products_limit != -1 && $data->total_products >= $this->user->plan_settings->products_limit): ?>
+                <?php if ($this->user->plan_settings->products_limit != -1 && $data->total_products >= $this->user->plan_settings->products_limit) : ?>
                     <button type="button" data-toggle="tooltip" title="<?= l('global.info_message.plan_feature_limit') ?>" class="btn btn-primary disabled">
                         <i class="fa fa-fw fa-plus-circle"></i> <?= l('products.create') ?>
                     </button>
-                <?php else: ?>
+                <?php else : ?>
                     <button type="button" data-toggle="modal" data-target="#create_product_modal" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('products.create') ?></button>
                 <?php endif ?>
             </div>
         </div>
     </div>
 
-    <?php if(count($data->products)): ?>
+    <?php if (count($data->products)) : ?>
         <?php $available_products = require APP_PATH . 'includes/products.php'; ?>
-        <?php foreach($data->products as $row): ?>
+        <?php foreach ($data->products as $row) : ?>
             <div class="custom-row mb-4" data-product-id="<?= $row->product_id ?>">
                 <div class="row">
-                    <div class="col-4 col-lg-4 d-flex align-items-center">
+                    <div class="col-3 col-lg-3 d-flex align-items-center">
                         <div class="font-weight-bold text-truncate">
-                            <a href="#" data-toggle="modal" data-target="#product_update_modal" data-product-id="<?= $row->product_id ?>" data-name="<?= $row->name ?>" data-type="<?= $row->type ?>" data-product="<?= $row->product ?>"><?= $row->name ?></a>
+                            <a href="#" data-toggle="modal" data-target="#product_update_modal" data-id="<?= $row->id ?>" data-name="<?= $row->name ?>" data-product-id="<?= $row->product_id ?>" data-product-link="<?= $row->product_link ?>" data-auto-generated-link="<?= $row->auto_generated_link ?>"><?= $row->name ?></a>
                         </div>
                     </div>
 
-                    <div class="col-4 col-lg-4 d-flex align-items-center">
-                        <i class="<?= $available_products[$row->type]['icon'] ?> fa-fw fa-sm mr-1" style="color: <?= $available_products[$row->type]['color'] ?>"></i>
-                        <?= $available_products[$row->type]['name'] ?>
+                    <div class="col-3 col-lg-3 d-flex flex-column justify-content-center">
+                        <a href="<?= $row->product_link ?>" target="_blank" style="word-break: break-word;"><?= $row->product_link ?></a>
+                        <a href="http://localhost/bunchful/p/<?= $row->auto_generated_link ?>" target="_blank" style="word-break: break-word;">Auto Generated Link</a>
+                    </div>
+
+                    <div class="col-2 col-lg-2 d-flex justify-content-center">
+                        <div class="font-weight-bold text-truncate">
+                            <?php if (file_exists( 'uploads/qr_codes/' . $row->id . '/image.png' )) { ?>
+                                <img data-toggle="modal" data-target="#show_qr_modal" data-id="<?= $row->id ?>" src="<?= UPLOADS_FULL_URL . 'qr_codes/' . $row->id . '/image.png' ?>" alt="QR" class="img-fluid" style="cursor: pointer;width: 85px;">
+                            <?php } else { ?>
+                                <p>No QR Code</p>
+                            <?php } ?>
+                        </div>
                     </div>
 
                     <div class="col-2 col-lg-2 d-none d-lg-flex justify-content-center justify-content-lg-end align-items-center">
@@ -63,7 +73,7 @@
             </div>
         <?php endforeach ?>
 
-    <?php else: ?>
+    <?php else : ?>
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-column align-items-center justify-content-center py-3">
@@ -75,7 +85,10 @@
     <?php endif ?>
 
 </section>
-
+<script>
+    var base_url = '<?= url() ?>';
+</script>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_create_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_update_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_delete_modal.php'), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/show_qr_modal.php'), 'modals'); ?>

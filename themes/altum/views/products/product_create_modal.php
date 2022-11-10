@@ -50,40 +50,57 @@
 </div>
 
 <?php ob_start() ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
 <script>
+    function makeid(length) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
+
+
     $('form[name="create_product"]').on('submit', event => {
+
+        let product_link = $('[name="product_link"]').val();
+        $('[name="auto_generated_link"]').val(base_url+'p/'+makeid(10));
+
         let notification_container = event.currentTarget.querySelector('.notification-container');
         notification_container.innerHTML = '';
         pause_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));
 
-        $.ajax({
-            type: 'POST',
-            url: `${url}product-ajax`,
-            data: $(event.currentTarget).serialize(),
-            dataType: 'json',
-            success: (data) => {
-                enable_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));
+        setTimeout(() => {
+            $.ajax({
+                type: 'POST',
+                url: `${url}product-ajax`,
+                data: $(event.currentTarget).serialize(),
+                dataType: 'json',
+                success: (data) => {
+                    enable_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));
 
-                if (data.status == 'error') {
-                    display_notifications(data.message, 'error', notification_container);
-                }
+                    if (data.status == 'error') {
+                        display_notifications(data.message, 'error', notification_container);
+                    } else if (data.status == 'success') {
 
-                else if(data.status == 'success') {
+                        /* Hide modal */
+                        $('#create_product_modal').modal('hide');
 
-                    /* Hide modal */
-                    $('#create_product_modal').modal('hide');
+                        /* Clear input values */
+                        $('form[name="create_product"] input').val('');
 
-                    /* Clear input values */
-                    $('form[name="create_product"] input').val('');
-
-                    redirect(`products`);
-                }
-            },
-            error: () => {
-                enable_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));
-                display_notifications(<?= json_encode(l('global.error_message.basic')) ?>, 'error', notification_container);
-            },
-        });
+                        redirect(`products`);
+                    }
+                },
+                error: () => {
+                    enable_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));
+                    display_notifications(<?= json_encode(l('global.error_message.basic')) ?>, 'error', notification_container);
+                },
+            });
+        }, 2000);
 
         event.preventDefault();
     })

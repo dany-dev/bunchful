@@ -10,6 +10,7 @@
 namespace Altum\Controllers;
 
 use Altum\Models\Page;
+use Altum\Models\User;
 use Altum\Routing\Router;
 use Altum\Traits\Paramsable;
 
@@ -47,7 +48,7 @@ class Controller {
 
             /* Establish the menu view */
             $menu = new \Altum\Views\View('partials/menu', (array) $this);
-            $this->add_view_content('menu', $menu->run([ 'pages' => $pages ]));
+            $this->add_view_content('menu', $menu->run([ 'pages' => $pages, 'user_data' => db()->where('user_id', $this->user->user_id)->getOne('users') ]));
 
             /* Get the footer */
             $pages = (new Page())->get_pages('bottom');

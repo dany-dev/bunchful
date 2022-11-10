@@ -38,7 +38,7 @@ class Index extends Controller {
 
         /* Establish the menu view */
         $menu = new \Altum\Views\View('partials/index_menu', (array) $this);
-        $this->add_view_content('index_menu', $menu->run([ 'pages' => (new Page())->get_pages('top') ]));
+        $this->add_view_content('index_menu', $menu->run([ 'pages' => (new Page())->get_pages('top'),  'user_data' => db()->where('user_id', $this->user->user_id)->getOne('users') ]));
 
         /* Main View */
         $view = new \Altum\Views\View('index/index', (array) $this);

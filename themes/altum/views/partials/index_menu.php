@@ -62,7 +62,9 @@
                                     <a class="dropdown-item" href="<?= url('links?type=vcard') ?>"><i class="fa fa-fw fa-sm fa-id-card mr-2"></i> <?= l('links.menu.vcards') ?></a>
                                 <?php endif ?>
 
-                                <a class="dropdown-item" href="<?= url('company') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('company.menu') ?></a>
+                                <?php if ($data->user_data->is_global_owner) : ?>
+                                    <a class="dropdown-item" href="<?= url('company') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('company.menu') ?></a>
+                                <?php endif ?>
 
                                 <?php if (settings()->links->qr_codes_is_enabled) : ?>
                                     <a class="dropdown-item" href="<?= url('qr-codes') ?>"><i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> <?= l('qr_codes.menu') ?></a>
@@ -79,7 +81,7 @@
                                 <?php endif ?>
 
                                 <a class="dropdown-item" href="<?= url('pixels') ?>"><i class="fa fa-fw fa-sm fa-adjust mr-2"></i> <?= l('pixels.menu') ?></a>
-                                
+
                                 <a class="dropdown-item" href="<?= url('products') ?>"><i class="fa fa-fw fa-sm fa-sitemap mr-2"></i> <?= l('products.menu') ?></a>
 
                                 <?php if (settings()->links->biolinks_is_enabled) : ?>
@@ -134,7 +136,7 @@
 
                     <?php endif ?>
                     <li class="nav-item">
-                        <a class="nav-link nav-btn" href="#"><?= l('request_a_demo')?></a>
+                        <a class="nav-link nav-btn" href="#"><?= l('request_a_demo') ?></a>
                     </li>
                     <li class="nav-item">
                         <?php if (count(\Altum\ThemeStyle::$themes) > 1) : ?>

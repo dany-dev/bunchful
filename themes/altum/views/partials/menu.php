@@ -1,5 +1,4 @@
 <?php defined('ALTUMCODE') || die() ?>
-
 <nav id="navbar" class="navbar navbar-main navbar-expand-lg navbar-light mb-6">
     <div class="container">
         <a class="navbar-brand" href="<?= url() ?>">
@@ -61,8 +60,10 @@
                             <?php if(settings()->links->vcards_is_enabled): ?>
                                 <a class="dropdown-item" href="<?= url('links?type=vcard') ?>"><i class="fa fa-fw fa-sm fa-id-card mr-2"></i> <?= l('links.menu.vcards') ?></a>
                             <?php endif ?>
-
-                            <a class="dropdown-item" href="<?= url('company') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('company.menu') ?></a>
+                            
+                            <?php if($data->user_data->is_global_owner): ?>
+                                <a class="dropdown-item" href="<?= url('company') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('company.menu') ?></a>
+                            <?php endif ?>
 
                             <?php if(settings()->links->qr_codes_is_enabled): ?>
                                 <a class="dropdown-item" href="<?= url('qr-codes') ?>"><i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> <?= l('qr_codes.menu') ?></a>

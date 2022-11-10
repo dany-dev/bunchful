@@ -187,6 +187,15 @@ class Router
                 ]
             ],
 
+            'p' => [
+                'controller' => 'Product',
+                'settings' => [
+                    'menu_no_margin' => false,
+                    'body_white' => false,
+                    'ads' => true,
+                ]
+            ],
+
             'qr-codes' => [
                 'controller' => 'QrCodes',
                 'settings' => [
@@ -788,6 +797,10 @@ class Router
                 'controller' => 'AdminPixels'
             ],
 
+            'products' => [
+                'controller' => 'AdminProducts'
+            ],
+
             'qr-codes' => [
                 'controller' => 'AdminQrCodes'
             ],
@@ -823,6 +836,10 @@ class Router
 
             'user-update' => [
                 'controller' => 'AdminUserUpdate'
+            ],
+
+            'assign-owner' => [
+                'controller' => 'AdminAssignOwner'
             ],
 
             'users-logs' => [

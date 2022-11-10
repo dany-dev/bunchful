@@ -21,6 +21,10 @@ class Company extends Controller
 
         Authentication::guard();
 
+        if(!$this->user->is_global_owner){
+            redirect();
+        }
+
         $isCompanyAdmin = database()->query("SELECT COUNT(*) AS `total` FROM `companies` WHERE `user_id` = {$this->user->user_id}")->fetch_object()->total ?? 0;
 
         if (!$isCompanyAdmin) {
