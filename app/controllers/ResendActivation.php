@@ -70,7 +70,6 @@ class ResendActivation extends Controller {
 
                     /* Send the email */
                     send_mail($_POST['email'], $email_template->subject, $email_template->body);
-
                 }
 
                 /* Set a nice success message */

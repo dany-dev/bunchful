@@ -69,11 +69,11 @@
         <?php endforeach ?>
 
     <?php else : ?>
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <div class="d-flex flex-column align-items-center justify-content-center py-3">
-                    <img src="<?= ASSETS_FULL_URL . 'images/no_rows.svg' ?>" class="col-10 col-md-7 col-lg-4 mb-3" alt="<?= l('company.no_data') ?>" />
-                    <h2 class="h4 text-muted"><?= l('company.no_data') ?></h2>
+                    <img src="<?= ASSETS_FULL_URL . 'images/no_rows.svg' ?>" class="col-10 col-md-7 col-lg-4 mb-3" alt="<?= l('company.no_employee_data') ?>" />
+                    <h2 class="h4 text-muted"><?= l('company.no_employee_data') ?></h2>
                 </div>
             </div>
         </div>

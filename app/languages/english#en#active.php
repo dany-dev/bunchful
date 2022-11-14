@@ -2452,6 +2452,7 @@ We donate 10% of sales to charity.',
 	'employee_remove_modal.subheader' => 'Comfirm Remove Employee?',
 	'employee_assign_modal.header' => 'Assign Employee as Admin',
 	'employee_assign_modal.subheader' => 'Comfirm Assign Employee as Admin?',
+	'company.no_employee_data' => 'No Employee Data',
 	
 
 ];

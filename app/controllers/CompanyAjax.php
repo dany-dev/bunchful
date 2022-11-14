@@ -138,7 +138,21 @@ class CompanyAjax extends Controller
         $company = db()->where('user_id', $this->user->user_id)->getOne('companies');
 
         if (!$user) {
-            // Send Email
+            $email_template = get_email_template(
+                [
+                    '{{NAME}}' => $_POST['email'],
+                ],
+                l('global.invitation.email.subject', $user->language),
+                [
+                    '{{COMPANY_NAME}}' => $company->name,
+                    '{{NAME}}' => $_POST['email'],
+                ],
+                l('global.invitation.email-body', $user->language)
+            );
+
+            /* Send the email */
+            send_mail($_POST['email'], $email_template->subject, $email_template->body);
+            
         } else {
             $isCompanyAdmin = database()->query("SELECT COUNT(*) AS `total` FROM `companies` WHERE `user_id` = {$user->user_id}")->fetch_object()->total ?? 0;
 
