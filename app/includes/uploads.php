@@ -60,5 +60,11 @@ return [
     /* Vcard avatars */
     'vcards_avatars' => [
         'whitelisted_file_extensions' => ['png', 'jpg', 'jpeg']
-    ]
+    ],
+
+    /* Catalog Images */
+    'catalog_images' => [
+        'whitelisted_file_extensions' => ['jpg', 'jpeg', 'png', 'gif'],
+        'path' => 'catalog_images/',
+    ],
 ];

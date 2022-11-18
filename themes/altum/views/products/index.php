@@ -28,13 +28,12 @@
     </div>
 
     <?php if (count($data->products)) : ?>
-        <?php $available_products = require APP_PATH . 'includes/products.php'; ?>
         <?php foreach ($data->products as $row) : ?>
             <div class="custom-row mb-4" data-product-id="<?= $row->product_id ?>">
                 <div class="row">
                     <div class="col-3 col-lg-3 d-flex align-items-center">
                         <div class="font-weight-bold text-truncate">
-                            <a href="#" data-toggle="modal" data-target="#product_update_modal" data-id="<?= $row->id ?>" data-name="<?= $row->name ?>" data-product-id="<?= $row->product_id ?>" data-product-link="<?= $row->product_link ?>" data-auto-generated-link="<?= $row->auto_generated_link ?>"><?= $row->name ?></a>
+                            <a href="#" data-toggle="modal" data-target="#product_update_modal" data-id="<?= $row->id ?>" data-name="<?= $row->name ?>" data-product-id="<?= $row->product_id ?>" data-product-link="<?= $row->product_link ?>" data-auto-generated-link="<?= $row->auto_generated_link ?>" data-type="<?= $row->type ?>"><?= $row->name ?></a>
                         </div>
                     </div>
 
@@ -64,7 +63,7 @@
                             </button>
 
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" data-toggle="modal" data-target="#product_update_modal" data-id="<?= $row->id ?>" data-name="<?= $row->name ?>" data-product-id="<?= $row->product_id ?>" data-product-link="<?= $row->product_link ?>" data-auto-generated-link="<?= $row->auto_generated_link ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?= l('global.edit') ?></a>
+                                <a href="#" data-toggle="modal" data-target="#product_update_modal" data-id="<?= $row->id ?>" data-name="<?= $row->name ?>" data-product-id="<?= $row->product_id ?>" data-product-link="<?= $row->product_link ?>" data-type="<?= $row->type ?>" data-auto-generated-link="<?= $row->auto_generated_link ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?= l('global.edit') ?></a>
                                 <a href="#" data-toggle="modal" data-target="#product_delete_modal" data-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.delete') ?></a>
                             </div>
                         </div>
@@ -88,7 +87,11 @@
 <script>
     var base_url = '<?= url() ?>';
 </script>
-<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_create_modal.php'), 'modals'); ?>
-<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_update_modal.php'), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_create_modal.php', [
+    'product_types' => $data->product_types
+]), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_update_modal.php', [
+    'product_types' => $data->product_types
+]), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/product_delete_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/products/show_qr_modal.php'), 'modals'); ?>

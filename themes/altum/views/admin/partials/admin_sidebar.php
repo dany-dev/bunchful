@@ -82,6 +82,22 @@
                 </div>
             </a>
         </li>
+        <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminProductTypes']) ? 'active' : null ?>">
+            <a class="nav-link d-flex flex-row" href="<?= url('admin/product-types') ?>">
+                <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-bars"></i></div>
+                <div class="col">
+                    <span class="d-inline"><?= l('admin_product_types.menu') ?></span>
+                </div>
+            </a>
+        </li>
+        <li class="<?= in_array(\Altum\Routing\Router::$controller, ['Catalog']) ? 'active' : null ?>">
+            <a class="nav-link d-flex flex-row" href="<?= url('admin/catalog') ?>">
+                <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-bars"></i></div>
+                <div class="col">
+                    <span class="d-inline"><?= l('admin_catalog.menu') ?></span>
+                </div>
+            </a>
+        </li>
         <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminQrCodes']) ? 'active' : null ?>">
             <a class="nav-link d-flex flex-row" href="<?= url('admin/qr-codes') ?>">
                 <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-qrcode"></i></div>

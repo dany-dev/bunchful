@@ -20,9 +20,10 @@ class Product extends Controller
     {
         $product_link = (isset($this->params[0])) ? $this->params[0] : null;
         if($product_link) {
-            $data = database()->query("SELECT * FROM `products` WHERE `auto_generated_link` LIKE '%{$product_link}%'")->fetch_object();
+            $data = database()->query("SELECT `product_link` FROM `products` WHERE `auto_generated_link` LIKE '%{$product_link}%'")->fetch_object();
+            $url = $data->product_link;
             if($data) {
-                header('Location: '.$data->product_link);
+                header('Location: '.$url);
                 die();
             }
         }

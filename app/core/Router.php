@@ -276,6 +276,14 @@ class Router
                 'controller' => 'ProductAjax'
             ],
 
+            'nfc-support' => [
+                'controller' => 'NfcSupport',
+            ],
+
+            'catalog' => [
+                'controller' => 'Catalog'
+            ],
+
             'company-ajax' => [
                 'controller' => 'CompanyAjax'
             ],
@@ -797,6 +805,10 @@ class Router
                 'controller' => 'AdminPixels'
             ],
 
+            'product-types' => [
+                'controller' => 'AdminProductTypes'
+            ],
+
             'products' => [
                 'controller' => 'AdminProducts'
             ],
@@ -914,6 +926,10 @@ class Router
                 'controller' => 'AdminPlanUpdate'
             ],
 
+            'catalog' => [
+                'controller' => 'AdminCatalog'
+            ],
+
             'codes' => [
                 'controller' => 'AdminCodes'
             ],
@@ -977,6 +993,7 @@ class Router
             'teams' => [
                 'controller' => 'AdminTeams',
             ],
+
         ],
 
         'admin-api' => [

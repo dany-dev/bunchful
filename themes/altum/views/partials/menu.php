@@ -61,6 +61,10 @@
                                 <a class="dropdown-item" href="<?= url('links?type=vcard') ?>"><i class="fa fa-fw fa-sm fa-id-card mr-2"></i> <?= l('links.menu.vcards') ?></a>
                             <?php endif ?>
                             
+                            <a class="dropdown-item" href="<?= url('catalog') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('catalog.menu') ?></a>
+
+                            <div class="dropdown-divider"></div>
+                            
                             <?php if($data->user_data->is_global_owner): ?>
                                 <a class="dropdown-item" href="<?= url('company') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('company.menu') ?></a>
                             <?php endif ?>
@@ -109,6 +113,8 @@
                                     <?php endif ?>
                                 <?php endif ?>
 
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#nfc_support_modal" ><i class="fa fa-fw fa-sm fa-envelope mr-2"></i> <?= l('account.nfc_support') ?></a>
+
                                 <a class="dropdown-item" href="<?= url('account-api') ?>"><i class="fa fa-fw fa-sm fa-code mr-2"></i> <?= l('account_api.menu') ?></a>
 
                                 <?php if(\Altum\Plugin::is_active('teams')): ?>
@@ -139,3 +145,62 @@
         </div>
     </div>
 </nav>
+
+
+<div class="modal fade" id="nfc_support_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><?= l('nfc_support_modal.header') ?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?= l('global.close') ?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <form name="nfc_support" method="post" role="form" action="<?= SITE_URL . 'nfc-support' ?>">
+                    <div class="notification-container"></div>
+
+                    <input type="hidden" name="token" value="<?= \Altum\Middlewares\Csrf::get() ?>" required="required" />
+
+                    <div class="form-group">
+                        <label for="name"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('nfc_support.input.name') ?></label>
+                        <input type="text" id="name" class="form-control" name="name" required="required" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('nfc_support.input.email') ?></label>
+                        <input type="text" id="email" class="form-control" name="email" required="required" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shipping_address"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('nfc_support.input.shipping_address') ?></label>
+                        <input type="text" id="shipping_address" class="form-control" name="shipping_address" required="required" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="replacement_reason"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('nfc_support.input.replacement_reason') ?></label>
+                        <textarea id="replacement_reason" name="replacement_reason" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product_link"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('nfc_support.input.product_link') ?></label>
+                        <input type="text" id="shipping_address" class="form-control" name="product_link" required="required" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product_description"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> <?= l('nfc_support.input.product_description') ?></label>
+                        <textarea id="product_description" name="product_description" class="form-control"></textarea>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary" data-is-ajax><?= l('global.send') ?></button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

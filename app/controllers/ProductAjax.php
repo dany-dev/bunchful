@@ -65,9 +65,12 @@ class ProductAjax extends Controller
         }
 
         $_POST['name'] = trim(Database::clean_string($_POST['name']));
+        $_POST['type'] = trim(Database::clean_string($_POST['type']));
         $_POST['product_id'] = trim(Database::clean_string($_POST['product_id'] ?? ''));
         $_POST['product_link'] = trim(Database::clean_string($_POST['product_link']));
         $_POST['auto_generated_link'] = trim(Database::clean_string($_POST['auto_generated_link']));
+        $_POST['auto_generated_link'] = str_replace(url()."p/", "", $_POST['auto_generated_link']);
+
 
         /* Check for possible errors */
         if (empty($_POST['name'])) {
@@ -84,6 +87,7 @@ class ProductAjax extends Controller
         $insertedId = db()->insert('products', [
             'user_id' => $this->user->user_id,
             'name' => $_POST['name'],
+            'type' => $_POST['type'],
             'product_id' => $_POST['product_id'],
             'product_link' => $_POST['product_link'],
             'auto_generated_link' => $_POST['auto_generated_link'] ?? '',
@@ -127,6 +131,7 @@ class ProductAjax extends Controller
 
         $_POST['id'] = (int) $_POST['id'];
         $_POST['name'] = trim(Database::clean_string($_POST['name']));
+        $_POST['type'] = trim(Database::clean_string($_POST['type']));
         $_POST['product_id'] = trim(Database::clean_string($_POST['product_id'] ?? ''));
         $_POST['product_link'] = trim(Database::clean_string($_POST['product_link']));
 
@@ -138,6 +143,7 @@ class ProductAjax extends Controller
         /* Insert to database */
         db()->where('id', $_POST['id'])->update('products', [
             'name' => $_POST['name'],
+            'type' => $_POST['type'],
             'product_id' => $_POST['product_id'],
             'product_link' => $_POST['product_link']
         ]);

@@ -22,16 +22,20 @@ class Products extends Controller {
 
         /* Get the products list for the user */
         $products = [];
+        $product_types = [];
+
         $products_result = database()->query("SELECT * FROM `products` WHERE `user_id` = {$this->user->user_id}");
         while($row = $products_result->fetch_object()) $products[] = $row;
+
+        $products_result = database()->query("SELECT * FROM `product_types` WHERE `status` = 1");
+        while($row = $products_result->fetch_object()) $product_types[] = $row;
 
         /* Prepare the View */
         $data = [
             'products'            => $products,
+            'product_types'            => $product_types,
             'total_products'      => $total_rows,
         ];
-
-
 
         $view = new \Altum\Views\View('products/index', (array) $this);
 
