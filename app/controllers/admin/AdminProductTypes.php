@@ -73,15 +73,15 @@ class AdminProductTypes extends Controller
 
         /* Check for any errors */
         if (empty($_POST)) {
-            redirect('admin/pixels');
+            redirect('admin/product-types');
         }
 
         if (empty($_POST['selected'])) {
-            redirect('admin/pixels');
+            redirect('admin/product-types');
         }
 
         if (!isset($_POST['type']) || (isset($_POST['type']) && !in_array($_POST['type'], ['delete']))) {
-            redirect('admin/pixels');
+            redirect('admin/product-types');
         }
 
         if (!Csrf::check()) {
@@ -93,12 +93,12 @@ class AdminProductTypes extends Controller
             switch ($_POST['type']) {
                 case 'delete':
 
-                    foreach ($_POST['selected'] as $pixel_id) {
+                    foreach ($_POST['selected'] as $product_type_id) {
                         /* Delete the resource */
-                        db()->where('pixel_id', $pixel_id)->delete('pixels');
+                        db()->where('product_type_id', $product_type_id)->delete('product_types');
 
                         /* Clear the cache */
-                        \Altum\Cache::$adapter->deleteItemsByTag('pixel_id=' . $pixel_id);
+                        \Altum\Cache::$adapter->deleteItemsByTag('product_type_id=' . $product_type_id);
                     }
 
                     break;
@@ -108,13 +108,13 @@ class AdminProductTypes extends Controller
             Alerts::add_success(l('admin_bulk_delete_modal.success_message'));
         }
 
-        redirect('admin/pixels');
+        redirect('admin/product-types');
     }
 
     public function delete()
     {
 
-        $pixel_id = isset($this->params[0]) ? (int) $this->params[0] : null;
+        $product_type_id = isset($this->params[0]) ? (int) $this->params[0] : null;
 
         //ALTUMCODE:DEMO if(DEMO) Alerts::add_error('This command is blocked on the demo.');
 
@@ -122,23 +122,23 @@ class AdminProductTypes extends Controller
             Alerts::add_error(l('global.error_message.invalid_csrf_token'));
         }
 
-        if (!$pixel = db()->where('pixel_id', $pixel_id)->getOne('pixels', ['pixel_id', 'name'])) {
-            redirect('admin/pixels');
+        if (!$product_types = db()->where('product_type_id', $product_type_id)->getOne('product_types', ['product_type_id', 'name'])) {
+            redirect('admin/product-types');
         }
 
         if (!Alerts::has_field_errors() && !Alerts::has_errors()) {
 
             /* Delete the resource */
-            db()->where('pixel_id', $pixel->pixel_id)->delete('pixels');
+            db()->where('product_type_id', $product_types->product_type_id)->delete('product_types');
 
             /* Clear the cache */
-            \Altum\Cache::$adapter->deleteItemsByTag('pixel_id=' . $pixel->pixel_id);
+            \Altum\Cache::$adapter->deleteItemsByTag('product_type_id=' . $product_types->product_type_id);
 
             /* Set a nice success message */
-            Alerts::add_success(sprintf(l('global.success_message.delete1'), '<strong>' . $pixel->name . '</strong>'));
+            Alerts::add_success(sprintf(l('global.success_message.delete1'), '<strong>' . $product_types->name . '</strong>'));
         }
 
-        redirect('admin/pixels');
+        redirect('admin/product-types');
     }
 
     public function create()

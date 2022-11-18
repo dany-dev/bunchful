@@ -166,5 +166,5 @@
     'name' => 'product_type',
     'resource_id' => 'product_type_id',
     'has_dynamic_resource_name' => true,
-    'path' => 'admin/product_types/delete/'
+    'path' => 'admin/product-types/delete/'
 ]), 'modals'); ?>
