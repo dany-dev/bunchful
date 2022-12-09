@@ -162,7 +162,8 @@ class User extends Model {
         $plan_settings = '',
         $plan_expiration_date = null,
         $timezone = 'UTC',
-        $is_admin_created = false
+        $is_admin_created = false,
+        $type = 'normal'
     ) {
 
         /* Define some needed variables */
@@ -214,6 +215,7 @@ class User extends Model {
             'country' => $country,
             'last_user_agent' => $last_user_agent,
             'total_logins' => $total_logins,
+            'registration_type' => $type
         ]);
 
         /* Clear out referral cookie if needed */

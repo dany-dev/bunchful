@@ -55,7 +55,7 @@
                                 <p>Price: $<?= $row->price ?></p>
                             </div>
                             <div class="card-footer text-center">
-                                <button class="btn btn-primary">Buy Now</button>
+                                <a class="btn btn-primary" href="<?= url('catalog/pay?id='.$row->catalog_id) ?>">Buy Now</a>
                             </div>
                         </div>
                     </div>

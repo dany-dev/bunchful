@@ -39,7 +39,7 @@
             </div>
             <div class="col-md-5">
                 <form>
-                    <div class="form-group">
+                    <div class="form-group d-flex">
                         <input type="email" class="form-control" id="Email" placeholder="Email Address">
                         <button type="submit" class="btn"><?= l('subscribe') ?></button>
                     </div>

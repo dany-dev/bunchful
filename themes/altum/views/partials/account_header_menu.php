@@ -57,6 +57,12 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link <?= \Altum\Routing\Router::$controller_key == 'account-orders' ? 'active' : null ?>" href="<?= url('account-orders') ?>">
+                <i class="fa fa-fw fa-sm fa-dollar-sign mr-1"></i> <?= l('account_orders.menu') ?>
+            </a>
+        </li>
+
         <?php if(\Altum\Plugin::is_active('affiliate') && settings()->affiliate->is_enabled): ?>
             <li class="nav-item">
                 <a class="nav-link <?= \Altum\Routing\Router::$controller_key == 'referrals' ? 'active' : null ?>" href="<?= url('referrals') ?>">

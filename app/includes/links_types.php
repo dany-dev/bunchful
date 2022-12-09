@@ -9,6 +9,10 @@ return [
         'icon' => 'fa fa-fw fa-hashtag',
         'color' => '#383eb2',
     ],
+    'biolink_template' => [
+        'icon' => 'fa fa-fw fa-hashtag',
+        'color' => '#383eb2',
+    ],
     'file' => [
         'icon' => 'fa fa-file',
         'color' => '#8c8c8c',

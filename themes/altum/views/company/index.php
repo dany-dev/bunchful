@@ -5,10 +5,10 @@
 
     <div class="row mb-4">
         <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0">
-            <h1 class="h4 m-0"><?= l('company.header') ?></h1>
+            <h1 class="h4 m-0"><?= $data->company->name ?></h1>
 
             <div class="ml-2">
-                <span data-toggle="tooltip" title="<?= l('company.subheader') ?>">
+                <span data-toggle="tooltip" title="<?= l('company.name') ?>">
                     <i class="fa fa-fw fa-info-circle text-muted"></i>
                 </span>
             </div>
@@ -26,6 +26,11 @@
                 <div class="d-flex justify-content-between">
                     <p><?= l('company.employees') ?></p>
                     <div>
+                        <?php if (isset($data->biolinks->id)) { ?>
+                            <a href="<?= url('biolink-template/' . $biolinks->id) ?>" class="btn btn-outline-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.biolink_template_update.menu') ?></a>
+                        <?php } else { ?>
+                            <a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#create_biolink_template" data-company_id="<?= $data->company->id ?>"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.biolink_template_create.menu') ?></a>
+                        <?php } ?>
                         <button type="button" data-toggle="modal" data-target="#add_employee_modal" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.add_employee') ?></button>
                     </div>
                 </div>
@@ -39,7 +44,7 @@
                 <div class="row">
                     <div class="col-4 col-lg-4 d-flex align-items-center">
                         <div class="font-weight-bold text-truncate">
-                            <?php if($row->is_admin) { ?><i class="fa fa-fw fa-user-secret"></i><?php } ?>
+                            <?php if ($row->is_admin) { ?><i class="fa fa-fw fa-user-secret"></i><?php } ?>
                             <a><?= $row->email ?></a>
                         </div>
                     </div>
@@ -59,8 +64,14 @@
                             </button>
 
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" data-toggle="modal" data-target="#employee_assign_modal" data-employee-id = "<?= $row->id?>" data-employee-admin = "<?= $row->is_admin?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?php if($row->is_admin) { echo l('global.employee.remove.admin'); } else { echo l('global.employee.assign.admin'); } ?></a>
-                                <a href="#" data-toggle="modal" data-target="#employee_remove_modal" data-employee-id = "<?= $row->id?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.remove') ?></a>
+                                <a href="#" data-toggle="modal" data-target="#employee_details_modal" data-employee-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.details') ?></a>
+                                <a href="#" data-toggle="modal" data-target="#employee_assign_modal" data-employee-id="<?= $row->id ?>" data-employee-admin="<?= $row->is_admin ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>
+                                    <?php if ($row->is_admin) {
+                                        echo l('global.employee.remove.admin');
+                                    } else {
+                                        echo l('global.employee.assign.admin');
+                                    } ?></a>
+                                <a href="#" data-toggle="modal" data-target="#employee_remove_modal" data-employee-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.remove') ?></a>
                             </div>
                         </div>
                     </div>
@@ -84,3 +95,4 @@
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/add_employee_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/assign_employee_admin_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/remove_employee_modal.php'), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/employee_details_modal.php'), 'modals'); ?>

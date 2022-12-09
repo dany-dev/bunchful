@@ -1,6 +1,6 @@
 <?php $has_announcements = false ?>
 <?php foreach(['guests', 'users'] as $type): ?>
-    <?php if(
+    <?php if( isset( settings()->announcements->{$type . '_content'} ) && 
         settings()->announcements->{$type . '_content'}
         && (!isset($_COOKIE['announcement_' . $type . '_id']) || (isset($_COOKIE['announcement_' . $type . '_id']) && $_COOKIE['announcement_' . $type . '_id'] != settings()->announcements->{$type . '_id'}))
         && (

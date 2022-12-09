@@ -9,13 +9,16 @@
 
 namespace Altum\Controllers;
 
+use Altum\Alerts;
 use Altum\Middlewares\Authentication;
+use Altum\Middlewares\Csrf;
 use Altum\Models\Domain;
 
-class Links extends Controller {
+class BiolinkTemplate extends Controller
+{
 
-    public function index() {
-
+    public function index()
+    {
         Authentication::guard();
 
         /* Prepare the filtering system */
@@ -45,16 +48,12 @@ class Links extends Controller {
         /* Iterate over the links */
         $links = [];
 
-        while($row = $links_result->fetch_object()) {
+        while ($row = $links_result->fetch_object()) {
             $row->full_url = $row->domain_id ? $row->scheme . $row->host . '/' . $row->url : SITE_URL . $row->url;
 
             $links[] = $row;
         }
 
-
-        $employee = db()->where('user_id', $this->user->user_id)->getOne('company_users');
-        $company_template = db()->where('company_id', $employee->company_id)->getOne('links');
-        
         /* Export handler */
         process_export_csv($links, 'include', ['link_id', 'user_id', 'project_id', 'pixels_ids', 'type', 'url', 'location_url', 'start_date', 'end_date', 'clicks', 'is_verified', 'is_enabled', 'datetime'], sprintf(l('links.title')));
         process_export_json($links, 'include', ['link_id', 'user_id', 'project_id', 'pixels_ids', 'type', 'url', 'location_url', 'settings', 'start_date', 'end_date', 'clicks', 'is_verified', 'is_enabled', 'datetime'], sprintf(l('links.title')));
@@ -83,11 +82,8 @@ class Links extends Controller {
             'pagination'        => $pagination,
             'filters'           => $filters,
             'projects'          => $projects,
-            'employee'          => $employee,
-            'company_template'  => $company_template,
             'links_types'       => require APP_PATH . 'includes/links_types.php',
         ];
-
         $view = new \Altum\Views\View('links/links_content', (array) $this);
         $this->add_view_content('links_content', $view->run($data));
 
@@ -95,7 +91,5 @@ class Links extends Controller {
         $view = new \Altum\Views\View('links/index', (array) $this);
 
         $this->add_view_content('content', $view->run());
-
     }
-
 }

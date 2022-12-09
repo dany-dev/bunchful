@@ -7,30 +7,30 @@
 
     <div class="col-12 col-lg-auto d-flex">
         <div>
-            <?php if(settings()->links->shortener_is_enabled || settings()->links->files_is_enabled || settings()->links->vcards_is_enabled): ?>
+            <?php if (settings()->links->shortener_is_enabled || settings()->links->files_is_enabled || settings()->links->vcards_is_enabled) : ?>
                 <div class="dropdown">
                     <button type="button" data-toggle="dropdown" data-boundary="viewport" class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
                         <i class="fa fa-fw fa-plus-circle"></i> <?= l('links.create') ?>
                     </button>
 
                     <div class="dropdown-menu dropdown-menu-right">
-                        <?php if(settings()->links->biolinks_is_enabled): ?>
-                        <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_biolink">
-                            <i class="fa fa-fw fa-circle fa-sm mr-1" style="color: <?= $data->links_types['biolink']['color'] ?>"></i>
+                        <?php if (settings()->links->biolinks_is_enabled) : ?>
+                            <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_biolink">
+                                <i class="fa fa-fw fa-circle fa-sm mr-1" style="color: <?= $data->links_types['biolink']['color'] ?>"></i>
 
-                            <?= l('link.biolink.name') ?>
-                        </a>
+                                <?= l('link.biolink.name') ?>
+                            </a>
                         <?php endif ?>
 
-                        <?php if(settings()->links->shortener_is_enabled): ?>
-                        <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_link">
-                            <i class="fa fa-fw fa-circle fa-sm mr-1" style="color: <?= $data->links_types['link']['color'] ?>"></i>
+                        <?php if (settings()->links->shortener_is_enabled) : ?>
+                            <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_link">
+                                <i class="fa fa-fw fa-circle fa-sm mr-1" style="color: <?= $data->links_types['link']['color'] ?>"></i>
 
-                            <?= l('link.link.name') ?>
-                        </a>
+                                <?= l('link.link.name') ?>
+                            </a>
                         <?php endif ?>
 
-                        <?php if(settings()->links->files_is_enabled): ?>
+                        <?php if (settings()->links->files_is_enabled) : ?>
                             <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_file">
                                 <i class="fa fa-fw fa-circle fa-sm mr-1" style="color: <?= $data->links_types['file']['color'] ?>"></i>
 
@@ -38,7 +38,7 @@
                             </a>
                         <?php endif ?>
 
-                        <?php if(settings()->links->vcards_is_enabled): ?>
+                        <?php if (settings()->links->vcards_is_enabled) : ?>
                             <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_vcard">
                                 <i class="fa fa-fw fa-circle fa-sm mr-1" style="color: <?= $data->links_types['vcard']['color'] ?>"></i>
 
@@ -47,11 +47,16 @@
                         <?php endif ?>
                     </div>
                 </div>
-            <?php else: ?>
+            <?php else : ?>
                 <button type="button" data-toggle="modal" data-target="#create_biolink" class="btn btn-primary">
                     <i class="fa fa-fw fa-plus-circle"></i> <?= l('links.create') ?>
                 </button>
             <?php endif ?>
+            <?php if (isset($data->company_template->link_id)) : ?>
+                <a href="<?= url('link/' . $data->company_template->link_id) ?>" class="btn btn-primary">
+                    <i class="fa fa-fw fa-plus-circle"></i> <?= l('company_template.update') ?>
+                </a>
+            <?php endif; ?>
         </div>
 
         <div class="ml-3">
@@ -81,7 +86,7 @@
                     <div class="dropdown-header d-flex justify-content-between">
                         <span class="h6 m-0"><?= l('global.filters.header') ?></span>
 
-                        <?php if(count($data->filters->get)): ?>
+                        <?php if (count($data->filters->get)) : ?>
                             <a href="<?= url('links') ?>" class="text-muted"><?= l('global.filters.reset') ?></a>
                         <?php endif ?>
                     </div>
@@ -117,7 +122,7 @@
                             </div>
                             <select name="project_id" id="filters_project_id" class="form-control form-control-sm">
                                 <option value=""><?= l('global.filters.all') ?></option>
-                                <?php foreach($data->projects as $row): ?>
+                                <?php foreach ($data->projects as $row) : ?>
                                     <option value="<?= $row->project_id ?>" <?= isset($data->filters->filters['project_id']) && $data->filters->filters['project_id'] == $row->project_id ? 'selected="selected"' : null ?>><?= $row->name ?></option>
                                 <?php endforeach ?>
                             </select>
@@ -127,20 +132,20 @@
                             <label for="filters_type" class="small"><?= l('links.filters.type') ?></label>
                             <select name="type" id="filters_type" class="form-control form-control-sm">
                                 <option value=""><?= l('global.filters.all') ?></option>
-                                <?php if(settings()->links->biolinks_is_enabled): ?>
-                                <option value="biolink" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'biolink' ? 'selected="selected"' : null ?>><?= l('links.filters.type.biolink') ?></option>
+                                <?php if (settings()->links->biolinks_is_enabled) : ?>
+                                    <option value="biolink" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'biolink' ? 'selected="selected"' : null ?>><?= l('links.filters.type.biolink') ?></option>
                                 <?php endif ?>
 
-                                <?php if(settings()->links->shortener_is_enabled): ?>
-                                <option value="link" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'link' ? 'selected="selected"' : null ?>><?= l('links.filters.type.link') ?></option>
+                                <?php if (settings()->links->shortener_is_enabled) : ?>
+                                    <option value="link" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'link' ? 'selected="selected"' : null ?>><?= l('links.filters.type.link') ?></option>
                                 <?php endif ?>
 
-                                <?php if(settings()->links->files_is_enabled): ?>
-                                <option value="file" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'file' ? 'selected="selected"' : null ?>><?= l('links.filters.type.file') ?></option>
+                                <?php if (settings()->links->files_is_enabled) : ?>
+                                    <option value="file" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'file' ? 'selected="selected"' : null ?>><?= l('links.filters.type.file') ?></option>
                                 <?php endif ?>
 
-                                <?php if(settings()->links->vcards_is_enabled): ?>
-                                <option value="vcard" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'vcard' ? 'selected="selected"' : null ?>><?= l('links.filters.type.vcard') ?></option>
+                                <?php if (settings()->links->vcards_is_enabled) : ?>
+                                    <option value="vcard" <?= isset($data->filters->filters['type']) && $data->filters->filters['type'] == 'vcard' ? 'selected="selected"' : null ?>><?= l('links.filters.type.vcard') ?></option>
                                 <?php endif ?>
                             </select>
                         </div>
@@ -165,7 +170,7 @@
                         <div class="form-group px-4">
                             <label for="filters_results_per_page" class="small"><?= l('global.filters.results_per_page') ?></label>
                             <select name="results_per_page" id="filters_results_per_page" class="form-control form-control-sm">
-                                <?php foreach($data->filters->allowed_results_per_page as $key): ?>
+                                <?php foreach ($data->filters->allowed_results_per_page as $key) : ?>
                                     <option value="<?= $key ?>" <?= $data->filters->results_per_page == $key ? 'selected="selected"' : null ?>><?= $key ?></option>
                                 <?php endforeach ?>
                             </select>
@@ -182,9 +187,9 @@
     </div>
 </div>
 
-<?php if(count($data->links)): ?>
+<?php if (count($data->links)) : ?>
 
-    <?php foreach($data->links as $row): ?>
+    <?php foreach ($data->links as $row) : ?>
 
         <div class="custom-row mb-4 <?= $row->is_enabled ? null : 'custom-row-inactive' ?>">
             <div class="row">
@@ -200,19 +205,19 @@
                         <div class="d-flex flex-column min-width-0">
                             <div class="d-inline-block text-truncate">
                                 <a href="<?= url('link/' . $row->link_id) ?>" class="font-weight-bold"><?= $row->url ?></a>
-                                <?php if($row->type == 'biolink' && $row->is_verified): ?>
+                                <?php if ($row->type == 'biolink' && $row->is_verified) : ?>
                                     <span data-toggle="tooltip" title="<?= l('link.biolink.verified') ?>"><i class="fa fa-fw fa-xs fa-check-circle" style="color: #3897F0"></i></span>
                                 <?php endif ?>
                             </div>
                             <div class="d-flex align-items-center">
                                 <span class="d-inline-block text-truncate">
-                                <?php if(!empty($row->location_url)): ?>
-                                    <img src="https://external-content.duckduckgo.com/ip3/<?= parse_url($row->location_url)['host'] ?>.ico" class="img-fluid icon-favicon mr-1" />
-                                    <a href="<?= $row->location_url ?>" class="text-muted align-middle" target="_blank" rel="noreferrer"><?= $row->location_url ?></a>
-                                <?php else: ?>
-                                    <img src="https://external-content.duckduckgo.com/ip3/<?= parse_url($row->full_url)['host'] ?>.ico" class="img-fluid icon-favicon mr-1" />
-                                    <a href="<?= $row->full_url ?>" class="text-muted align-middle" target="_blank" rel="noreferrer"><?= $row->full_url ?></a>
-                                <?php endif ?>
+                                    <?php if (!empty($row->location_url)) : ?>
+                                        <img src="https://external-content.duckduckgo.com/ip3/<?= parse_url($row->location_url)['host'] ?>.ico" class="img-fluid icon-favicon mr-1" />
+                                        <a href="<?= $row->location_url ?>" class="text-muted align-middle" target="_blank" rel="noreferrer"><?= $row->location_url ?></a>
+                                    <?php else : ?>
+                                        <img src="https://external-content.duckduckgo.com/ip3/<?= parse_url($row->full_url)['host'] ?>.ico" class="img-fluid icon-favicon mr-1" />
+                                        <a href="<?= $row->full_url ?>" class="text-muted align-middle" target="_blank" rel="noreferrer"><?= $row->full_url ?></a>
+                                    <?php endif ?>
                                 </span>
                             </div>
                         </div>
@@ -221,7 +226,7 @@
 
                 <div class="col col-lg-3 d-none d-lg-flex flex-lg-row justify-content-lg-between align-items-center">
                     <div>
-                        <?php if($row->project_id): ?>
+                        <?php if ($row->project_id) : ?>
                             <a href="<?= url('links?project_id=' . $row->project_id) ?>" class="text-decoration-none">
                                 <span class="py-1 px-2 border rounded text-muted small" style="border-color: <?= $data->projects[$row->project_id]->color ?> !important;">
                                     <?= $data->projects[$row->project_id]->name ?>
@@ -243,28 +248,11 @@
 
                 <div class="col-4 col-lg-2 d-flex justify-content-center justify-content-lg-end align-items-center">
                     <div class="custom-control custom-switch" data-toggle="tooltip" title="<?= l('links.is_enabled_tooltip') ?>">
-                        <input
-                                type="checkbox"
-                                class="custom-control-input"
-                                id="link_is_enabled_<?= $row->link_id ?>"
-                                data-row-id="<?= $row->link_id ?>"
-                                onchange="ajax_call_helper(event, 'link-ajax', 'is_enabled_toggle')"
-                            <?= $row->is_enabled ? 'checked="checked"' : null ?>
-                        >
+                        <input type="checkbox" class="custom-control-input" id="link_is_enabled_<?= $row->link_id ?>" data-row-id="<?= $row->link_id ?>" onchange="ajax_call_helper(event, 'link-ajax', 'is_enabled_toggle')" <?= $row->is_enabled ? 'checked="checked"' : null ?>>
                         <label class="custom-control-label clickable" for="link_is_enabled_<?= $row->link_id ?>"></label>
                     </div>
 
-                    <button
-                            id="url_copy"
-                            type="button"
-                            class="btn btn-link text-muted"
-                            data-toggle="tooltip"
-                            title="<?= l('global.clipboard_copy') ?>"
-                            aria-label="<?= l('global.clipboard_copy') ?>"
-                            data-copy="<?= l('global.clipboard_copy') ?>"
-                            data-copied="<?= l('global.clipboard_copied') ?>"
-                            data-clipboard-text="<?= $row->full_url ?>"
-                    >
+                    <button id="url_copy" type="button" class="btn btn-link text-muted" data-toggle="tooltip" title="<?= l('global.clipboard_copy') ?>" aria-label="<?= l('global.clipboard_copy') ?>" data-copy="<?= l('global.clipboard_copy') ?>" data-copied="<?= l('global.clipboard_copied') ?>" data-clipboard-text="<?= $row->full_url ?>">
                         <i class="fa fa-fw fa-sm fa-copy"></i>
                     </button>
 
@@ -276,8 +264,8 @@
                         <div class="dropdown-menu dropdown-menu-right">
                             <a href="<?= url('link/' . $row->link_id) ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> <?= l('global.edit') ?></a>
                             <a href="<?= url('link/' . $row->link_id . '/statistics') ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-chart-bar mr-2"></i> <?= l('link.statistics.link') ?></a>
-                            <?php if(settings()->links->qr_codes_is_enabled): ?>
-                            <a href="<?= url('qr-code-create?name=' . $row->url . '&project_id=' . $row->project_id . '&type=url&url=' . $row->full_url) ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> <?= l('qr_codes.link') ?></a>
+                            <?php if (settings()->links->qr_codes_is_enabled) : ?>
+                                <a href="<?= url('qr-code-create?name=' . $row->url . '&project_id=' . $row->project_id . '&type=url&url=' . $row->full_url) ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> <?= l('qr_codes.link') ?></a>
                             <?php endif ?>
                             <a href="#" data-toggle="modal" data-target="#link_duplicate_modal" class="dropdown-item" data-link-id="<?= $row->link_id ?>"><i class="fa fa-fw fa-sm fa-copy mr-2"></i> <?= l('global.duplicate') ?></a>
                             <a href="#" data-toggle="modal" data-target="#link_delete_modal" class="dropdown-item" data-link-id="<?= $row->link_id ?>"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.delete') ?></a>
@@ -290,7 +278,7 @@
 
     <div class="mt-3"><?= $data->pagination ?></div>
 
-<?php else: ?>
+<?php else : ?>
     <div class="card">
         <div class="card-body">
             <div class="d-flex flex-column align-items-center justify-content-center py-3">

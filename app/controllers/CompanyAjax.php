@@ -142,17 +142,17 @@ class CompanyAjax extends Controller
                 [
                     '{{NAME}}' => $_POST['email'],
                 ],
-                l('global.invitation.email.subject', $user->language),
+                l('global.invitation.email.subject'),
                 [
                     '{{COMPANY_NAME}}' => $company->name,
                     '{{NAME}}' => $_POST['email'],
+                    '{{REGISTRATION_LINK}}' => url('register?type=invite&c_id='.$company->id),
                 ],
-                l('global.invitation.email-body', $user->language)
+                l('global.invitation.email-body')
             );
 
             /* Send the email */
             send_mail($_POST['email'], $email_template->subject, $email_template->body);
-            
         } else {
             $isCompanyAdmin = database()->query("SELECT COUNT(*) AS `total` FROM `companies` WHERE `user_id` = {$user->user_id}")->fetch_object()->total ?? 0;
 
@@ -169,13 +169,14 @@ class CompanyAjax extends Controller
                     $email_template = get_email_template(
                         [
                             '{{NAME}}' => $user->name,
+                            '{{COMPANY_NAME}}' => $company->name
                         ],
-                        l('global.invitation.email.subject', $user->language),
+                        l('global.employee.added.email.subject'),
                         [
                             '{{COMPANY_NAME}}' => $company->name,
                             '{{NAME}}' => $user->name,
                         ],
-                        l('global.invitation.email-body', $user->language)
+                        l('global.employee.added.email-body')
                     );
 
                     /* Send the email */
@@ -186,6 +187,11 @@ class CompanyAjax extends Controller
                 Response::json(sprintf(l('global.employee.already-owner'), '<strong>' . e($_POST['email']) . '</strong>'), "error");
             }
         }
+
+
+        print_r($user);
+        die();
+
         Response::json(sprintf(l('global.employee.account-not-found'), '<strong>' . e($_POST['email']) . '</strong>'), "error");
     }
 
@@ -263,5 +269,15 @@ class CompanyAjax extends Controller
         }
 
         Response::json(l('global.employee.account-not-found'), 'error');
+    }
+
+    public function employee_details()
+    {
+        $employee_id = $_GET['id'];
+
+        $employee_data = db()->where('id', $employee_id)->getOne('company_users');
+        $user_data = db()->where('user_id', $employee_data->user_id)->getOne('users');
+
+        Response::json('','success',$user_data);
     }
 }

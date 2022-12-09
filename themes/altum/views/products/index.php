@@ -39,7 +39,7 @@
 
                     <div class="col-3 col-lg-3 d-flex flex-column justify-content-center">
                         <a href="<?= $row->product_link ?>" target="_blank" style="word-break: break-word;"><?= $row->product_link ?></a>
-                        <a href="http://localhost/bunchful/p/<?= $row->auto_generated_link ?>" target="_blank" style="word-break: break-word;">Auto Generated Link</a>
+                        <a href="<?= $row->auto_generated_link ?>" target="_blank" style="word-break: break-word;">Auto Generated Link</a>
                     </div>
 
                     <div class="col-2 col-lg-2 d-flex justify-content-center">

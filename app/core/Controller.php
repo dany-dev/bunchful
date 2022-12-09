@@ -14,54 +14,61 @@ use Altum\Models\User;
 use Altum\Routing\Router;
 use Altum\Traits\Paramsable;
 
-class Controller {
+class Controller
+{
     use Paramsable;
 
     public $views = [];
 
-    public function __construct(Array $params = []) {
+    public function __construct(array $params = [])
+    {
 
         $this->add_params($params);
-
     }
 
-    public function add_view_content($name, $data) {
+    public function add_view_content($name, $data)
+    {
 
         $this->views[$name] = $data;
-
     }
 
-    public function run() {
+    public function run()
+    {
 
         /* Do we need to show something? */
-        if(!Router::$controller_settings['has_view']) {
+        if (!Router::$controller_settings['has_view']) {
             return;
         }
 
-        if(Router::$path == 'l') {
+        if (Router::$path == 'l') {
             $wrapper = new \Altum\Views\View('l/wrapper', (array) $this);
         }
 
-        if(Router::$path == '') {
+        if (Router::$path == '') {
             /* Get the top menu custom pages */
             $pages = (new Page())->get_pages('top');
 
             /* Establish the menu view */
             $menu = new \Altum\Views\View('partials/menu', (array) $this);
-            $this->add_view_content('menu', $menu->run([ 'pages' => $pages, 'user_data' => db()->where('user_id', $this->user->user_id)->getOne('users') ]));
+
+            if ($this->user) {
+                $this->add_view_content('menu', $menu->run(['pages' => $pages, 'user_data' => db()->where('user_id', $this->user->user_id)->getOne('users')]));
+            } else {
+                $this->add_view_content('menu', $menu->run(['pages' => $pages, 'user_data' => []]));
+            }
 
             /* Get the footer */
             $pages = (new Page())->get_pages('bottom');
 
             /* Establish the footer view */
             $footer = new \Altum\Views\View('partials/footer', (array) $this);
-            $this->add_view_content('footer', $footer->run([ 'pages' => $pages ]));
+            $this->add_view_content('footer', $footer->run(['pages' => $pages]));
 
             $wrapper = new \Altum\Views\View(Router::$controller_settings['wrapper'], (array) $this);
         }
 
 
-        if(Router::$path == 'admin') {
+        if (Router::$path == 'admin') {
             /* Establish the side menu view */
             $sidebar = new \Altum\Views\View('admin/partials/admin_sidebar', (array) $this);
             $this->add_view_content('admin_sidebar', $sidebar->run());
@@ -79,6 +86,4 @@ class Controller {
 
         echo $wrapper->run();
     }
-
-
 }

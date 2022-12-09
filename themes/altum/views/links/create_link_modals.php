@@ -129,6 +129,69 @@
     </div>
 </div>
 
+<div class="modal fade" id="create_biolink_template" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><?= l('create_biolink_modal.header') ?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?= l('global.close') ?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="create_biolink_template" method="post" role="form">
+                    <input type="hidden" name="token" value="<?= \Altum\Middlewares\Csrf::get() ?>" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="company_id" value />
+                    <input type="hidden" name="type" value="biolink_template" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label><i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> <?= l('create_biolink_modal.input.url') ?></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <?php if(count($data->domains)): ?>
+                                    <select name="domain_id" class="appearance-none select-custom-altum form-control input-group-text">
+                                        <?php if(settings()->links->main_domain_is_enabled || \Altum\Middlewares\Authentication::is_admin()): ?>
+                                            <option value=""><?= SITE_URL ?></option>
+                                        <?php endif ?>
+
+                                        <?php foreach($data->domains as $row): ?>
+                                            <option value="<?= $row->domain_id ?>"><?= $row->url ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                <?php else: ?>
+                                    <span class="input-group-text"><?= SITE_URL ?></span>
+                                <?php endif ?>
+                            </div>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="url"
+                                maxlength="256"
+                                onchange="update_this_value(this, get_slug)"
+                                onkeyup="update_this_value(this, get_slug)"
+                                placeholder="<?= $this->user->plan_settings->custom_url ? l('create_biolink_modal.input.url_placeholder_custom') :  l('create_biolink_modal.input.url_placeholder') ?>"
+                                <?= !$this->user->plan_settings->custom_url ? 'readonly="readonly"' : null ?>
+                                <?= $this->user->plan_settings->custom_url ? null : 'data-toggle="tooltip" title="' . l('global.info_message.plan_feature_no_access') . '"' ?>
+                            />
+                        </div>
+                        <small class="form-text text-muted"><?= l('create_biolink_modal.input.url_help') ?></small>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary" data-is-ajax><?= l('create_biolink_modal.input.submit') ?></button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="create_file" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -261,7 +324,12 @@
 
 <?php ob_start() ?>
 <script>
-    $('form[name="create_link"],form[name="create_biolink"],form[name="create_file"],form[name="create_vcard"]').on('submit', event => {
+    $('#create_biolink_template').on('shown.bs.modal', event => {
+        let company_id = $(event.relatedTarget).data('company_id');
+        $('#create_biolink_template').find('[name="company_id"]').val(company_id);
+    });
+
+    $('form[name="create_link"],form[name="create_biolink_template"], form[name="create_biolink"],form[name="create_file"],form[name="create_vcard"]').on('submit', event => {
         let form = $(event.currentTarget)[0];
         let data = new FormData(form);
 

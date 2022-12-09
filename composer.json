@@ -32,8 +32,7 @@
         "rexxars/morse": "^1.0",
         "chriskonnertz/bbcode": "^1.1",
         "spatie/icalendar-generator": "^2.5",
-        "kwn/number-to-words": "^2.5",
-        "endroid/qr-code": "^4.6"
+        "kwn/number-to-words": "^2.5"
     },
     "scripts": {
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup"

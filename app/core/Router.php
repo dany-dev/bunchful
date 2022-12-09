@@ -196,6 +196,10 @@ class Router
                 ]
             ],
 
+            'biolink-template' => [
+                'controller' => 'BiolinkTemplate'
+            ],
+
             'qr-codes' => [
                 'controller' => 'QrCodes',
                 'settings' => [
@@ -403,6 +407,14 @@ class Router
 
             'account-payments' => [
                 'controller' => 'AccountPayments',
+                'settings' => [
+                    'body_white' => false,
+                    'allow_team_access' => false,
+                ]
+            ],
+
+            'account-orders' => [
+                'controller' => 'AccountOrders',
                 'settings' => [
                     'body_white' => false,
                     'allow_team_access' => false,

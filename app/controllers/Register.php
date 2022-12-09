@@ -15,14 +15,17 @@ use Altum\Captcha;
 use Altum\Database\Database;
 use Altum\Logger;
 use Altum\Middlewares\Authentication;
+use Altum\Models\Company;
 use Altum\Models\User;
 use Altum\Response;
 use Google\Client;
 use MaxMind\Db\Reader;
 
-class Register extends Controller {
+class Register extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
 
         Authentication::guard('guest');
 
@@ -30,7 +33,7 @@ class Register extends Controller {
         $unique_registration_identifier = isset($_GET['unique_registration_identifier'], $_GET['email']) && $_GET['unique_registration_identifier'] == md5($_GET['email'] . $_GET['email']) ? Database::clean_string($_GET['unique_registration_identifier']) : null;
 
         /* Check if Registration is enabled first */
-        if(!settings()->users->register_is_enabled && (!\Altum\Plugin::is_active('teams') || (\Altum\Plugin::is_active('teams') && !$unique_registration_identifier))) {
+        if (!settings()->users->register_is_enabled && (!\Altum\Plugin::is_active('teams') || (\Altum\Plugin::is_active('teams') && !$unique_registration_identifier))) {
             redirect();
         }
 
@@ -46,7 +49,25 @@ class Register extends Controller {
         /* Initiate captcha */
         $captcha = new Captcha();
 
-        if(!empty($_POST)) {
+        if (!empty($_POST)) {
+
+            $type = $_GET['type'] ? $_GET['type'] : "normal";
+            $company_id = $_GET['c_id'] ? $_GET['c_id'] : 0;
+
+            if ($type != 'invite' && $type != 'normal') {
+                Alerts::add_error(l('register.registration_type.invalid'));
+            }
+
+            if ($type == 'invite' && $company_id == 0) {
+                Alerts::add_error(l('register.invite_company.none'));
+            }
+
+            $company = db()->where('id', $company_id)->getOne('companies');
+
+            if ($type == 'invite' && !$company) {
+                Alerts::add_error(l('register.invite_company.invalid'));
+            }
+
             /* Clean some posted variables */
             $_POST['name'] = mb_substr(trim(filter_var($_POST['name'], FILTER_SANITIZE_STRING)), 0, 64);
             $_POST['email'] = mb_substr(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL), 0, 320);
@@ -57,48 +78,53 @@ class Register extends Controller {
             $values['password'] = $_POST['password'];
 
             /* Check for any errors */
-            $required_fields = ['name', 'email' ,'password'];
-            foreach($required_fields as $field) {
-                if(!isset($_POST[$field]) || (isset($_POST[$field]) && empty($_POST[$field]) && $_POST[$field] != '0')) {
+            $required_fields = ['name', 'email', 'password'];
+            foreach ($required_fields as $field) {
+                if (!isset($_POST[$field]) || (isset($_POST[$field]) && empty($_POST[$field]) && $_POST[$field] != '0')) {
                     Alerts::add_field_error($field, l('global.error_message.empty_field'));
                 }
             }
 
-            if(settings()->captcha->register_is_enabled && !$captcha->is_valid()) {
+            if (settings()->captcha->register_is_enabled && !$captcha->is_valid()) {
                 Alerts::add_field_error('captcha', l('global.error_message.invalid_captcha'));
             }
-            if(mb_strlen($_POST['name']) < 1 || mb_strlen($_POST['name']) > 64) {
+
+            if (mb_strlen($_POST['name']) < 1 || mb_strlen($_POST['name']) > 64) {
                 Alerts::add_field_error('name', l('register.error_message.name_length'));
             }
-            if(db()->where('email', $_POST['email'])->has('users')) {
+
+            if (db()->where('email', $_POST['email'])->has('users')) {
                 Alerts::add_field_error('email', l('register.error_message.email_exists'));
             }
-            if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+
+            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
                 Alerts::add_field_error('email', l('register.error_message.invalid_email'));
             }
-            if(mb_strlen($_POST['password']) < 6 || mb_strlen($_POST['password']) > 64) {
+
+            if (mb_strlen($_POST['password']) < 6 || mb_strlen($_POST['password']) > 64) {
                 Alerts::add_field_error('password', l('global.error_message.password_length'));
             }
 
             /* Make sure the domain is not blacklisted */
             $email_domain = get_domain_from_email($_POST['email']);
-            if(settings()->users->blacklisted_domains && in_array($email_domain, explode(',', settings()->users->blacklisted_domains))) {
+            if (settings()->users->blacklisted_domains && in_array($email_domain, explode(',', settings()->users->blacklisted_domains))) {
                 Alerts::add_field_error('email', l('register.error_message.blacklisted_domain'));
             }
 
             /* Detect the location */
             try {
                 $maxmind = (new Reader(APP_PATH . 'includes/GeoLite2-Country.mmdb'))->get(get_ip());
-            } catch(\Exception $exception) { /* :) */ }
+            } catch (\Exception $exception) { /* :) */
+            }
             $country = isset($maxmind) && isset($maxmind['country']) ? $maxmind['country']['iso_code'] : null;
 
             /* Make sure the country is not blacklisted */
-            if($country && in_array($country, settings()->users->blacklisted_countries ?? [])) {
+            if ($country && in_array($country, settings()->users->blacklisted_countries ?? [])) {
                 Alerts::add_error(l('register.error_message.blacklisted_country'));
             }
 
             /* If there are no errors continue the registering process */
-            if(!Alerts::has_field_errors() && !Alerts::has_errors()) {
+            if (!Alerts::has_field_errors() && !Alerts::has_errors()) {
                 $values = [
                     'name' => '',
                     'email' => '',
@@ -106,7 +132,7 @@ class Register extends Controller {
                 ];
 
                 /* Define some needed variables */
-                $active 	                = (int) !settings()->users->email_confirmation;
+                $active                     = (int) !settings()->users->email_confirmation;
                 $email_code                 = md5($_POST['email'] . microtime());
 
                 /* Determine what plan is set by default */
@@ -124,14 +150,15 @@ class Register extends Controller {
                     $plan_id,
                     $plan_settings,
                     $plan_expiration_date,
-                    settings()->main->default_timezone
+                    settings()->main->default_timezone,
+                    $type
                 );
 
                 /* Log the action */
                 Logger::users($registered_user['user_id'], 'register.success');
 
                 /* Send notification to admin if needed */
-                if(settings()->email_notifications->new_user && !empty(settings()->email_notifications->emails)) {
+                if (settings()->email_notifications->new_user && !empty(settings()->email_notifications->emails)) {
 
                     /* Prepare the email */
                     $email_template = get_email_template(
@@ -146,20 +173,41 @@ class Register extends Controller {
 
                     send_mail(explode(',', settings()->email_notifications->emails), $email_template->subject, $email_template->body);
 
+                    if ($type && $company_id) {
+                        db()->insert('company_users', [
+                            'user_id' => $registered_user['user_id'],
+                            'company_id' => $company_id,
+                        ]);
+
+                        $email_template = get_email_template(
+                            [
+                                '{{NAME}}' => $registered_user['name'],
+                                '{{COMPANY_NAME}}' => $company->name
+                            ],
+                            l('global.employee.added.email.subject'),
+                            [
+                                '{{COMPANY_NAME}}' => $company->name,
+                                '{{NAME}}' => $registered_user['name'],
+                            ],
+                            l('global.employee.added.email-body')
+                        );
+
+                        /* Send the email */
+                        send_mail($_POST['email'], $email_template->subject, $email_template->body);
+                    }
                 }
 
                 /* If active = 1 then login the user, else send the user an activation email */
-                if($active == '1') {
+                if ($active == '1') {
 
                     /* Send webhook notification if needed */
-                    if(settings()->webhooks->user_new) {
+                    if (settings()->webhooks->user_new) {
 
                         \Unirest\Request::post(settings()->webhooks->user_new, [], [
                             'user_id' => $registered_user['user_id'],
                             'email' => $_POST['email'],
                             'name' => $_POST['name']
                         ]);
-
                     }
 
                     /* Set a nice success message */
@@ -191,7 +239,6 @@ class Register extends Controller {
                     /* Set a nice success message */
                     Alerts::add_success(l('register.success_message.registration'));
                 }
-
             }
         }
 
@@ -204,7 +251,5 @@ class Register extends Controller {
         $view = new \Altum\Views\View('register/index', (array) $this);
 
         $this->add_view_content('content', $view->run($data));
-
     }
-
 }

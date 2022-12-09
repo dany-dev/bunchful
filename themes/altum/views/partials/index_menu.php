@@ -26,7 +26,7 @@
                         <li class="nav-item"><a class="nav-link" href="<?= url('directory') ?>"><?= l('directory.menu') ?></a></li>
                     <?php endif ?>
 
-                    <?php if (settings()->tools->is_enabled && settings()->tools->access == 'everyone') : ?>
+                    <?php if (isset(settings()->tools->is_enabled) && settings()->tools->is_enabled && settings()->tools->access == 'everyone') : ?>
                         <li class="nav-item"><a class="nav-link" href="<?= url('tools') ?>"><?= l('tools.menu') ?></a></li>
                     <?php endif ?>
 
@@ -70,7 +70,7 @@
                                     <a class="dropdown-item" href="<?= url('qr-codes') ?>"><i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> <?= l('qr_codes.menu') ?></a>
                                 <?php endif ?>
 
-                                <?php if (settings()->tools->is_enabled && settings()->tools->access == 'users') : ?>
+                                <?php if (isset(settings()->tools->is_enabled) && settings()->tools->is_enabled && settings()->tools->access == 'users') : ?>
                                     <a class="dropdown-item" href="<?= url('tools') ?>"><i class="fa fa-fw fa-sm fa-tools mr-2"></i> <?= l('tools.menu') ?></a>
                                 <?php endif ?>
 

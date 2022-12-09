@@ -12,13 +12,16 @@ namespace Altum\Controllers;
 use Altum\Meta;
 use Altum\Models\Page;
 
-class Index extends Controller {
+class Index extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
 
         /* Custom index redirect if set */
-        if(!empty(settings()->main->index_url)) {
-            header('Location: ' . settings()->main->index_url); die();
+        if (!empty(settings()->main->index_url)) {
+            header('Location: ' . settings()->main->index_url);
+            die();
         }
 
         /* Plans View */
@@ -26,10 +29,10 @@ class Index extends Controller {
         $this->add_view_content('plans', $view->run());
 
         /* Opengraph image */
-        if(settings()->main->opengraph) {
+        if (settings()->main->opengraph) {
             Meta::set_social_url(SITE_URL);
             Meta::set_social_description(l('index.meta_description'));
-            Meta::set_social_image(UPLOADS_FULL_URL . 'main/' .settings()->main->opengraph);
+            Meta::set_social_image(UPLOADS_FULL_URL . 'main/' . settings()->main->opengraph);
         }
 
         $total_links = database()->query("SELECT MAX(`link_id`) AS `total` FROM `links`")->fetch_object()->total ?? 0;
@@ -38,7 +41,11 @@ class Index extends Controller {
 
         /* Establish the menu view */
         $menu = new \Altum\Views\View('partials/index_menu', (array) $this);
-        $this->add_view_content('index_menu', $menu->run([ 'pages' => (new Page())->get_pages('top'),  'user_data' => db()->where('user_id', $this->user->user_id)->getOne('users') ]));
+        if ($this->user) {
+            $this->add_view_content('index_menu', $menu->run(['pages' => (new Page())->get_pages('top'),  'user_data' => db()->where('user_id', $this->user->user_id)->getOne('users')]));
+        } else {
+            $this->add_view_content('index_menu', $menu->run(['pages' => (new Page())->get_pages('top'),  'user_data' => []]));
+        }
 
         /* Main View */
         $view = new \Altum\Views\View('index/index', (array) $this);
@@ -47,7 +54,5 @@ class Index extends Controller {
             'total_qr_codes' => $total_qr_codes,
             'total_track_links' => $total_track_links,
         ]));
-
     }
-
 }
