@@ -57,51 +57,64 @@
     <div class="table-responsive table-custom-container">
         <table class="table table-custom">
             <thead>
-            <tr>
-                <th data-bulk-table class="d-none">
-                    <div class="custom-control custom-checkbox">
-                        <input id="bulk_select_all" type="checkbox" class="custom-control-input" />
-                        <label class="custom-control-label" for="bulk_select_all"></label>
-                    </div>
-                </th>
-                <th><?= l('admin_biolinks_themes.table.name') ?></th>
-                <th><?= l('admin_biolinks_themes.table.is_enabled') ?></th>
-                <th><?= l('admin_biolinks_themes.table.datetime') ?></th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th data-bulk-table class="d-none">
+                        <div class="custom-control custom-checkbox">
+                            <input id="bulk_select_all" type="checkbox" class="custom-control-input" />
+                            <label class="custom-control-label" for="bulk_select_all"></label>
+                        </div>
+                    </th>
+                    <th><?= l('admin_biolinks_themes.table.name') ?></th>
+                    <th><?= l('admin_biolinks_themes.table.is_enabled') ?></th>
+                    <th><?= l('admin_biolinks_themes.table.company') ?></th>
+                    <th><?= l('admin_biolinks_themes.table.datetime') ?></th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            <?php foreach($data->biolinks_themes as $row): ?>
-                <?php //ALTUMCODE:DEMO if(DEMO) {$row->user_email = 'hidden@demo.com'; $row->user_name = 'hidden on demo';} ?>
-                <tr>
-                    <td data-bulk-table class="d-none">
-                        <div class="custom-control custom-checkbox">
-                            <input id="selected_biolink_theme_id_<?= $row->biolink_theme_id ?>" type="checkbox" class="custom-control-input" name="selected[]" value="<?= $row->biolink_theme_id ?>" />
-                            <label class="custom-control-label" for="selected_biolink_theme_id_<?= $row->biolink_theme_id ?>"></label>
-                        </div>
-                    </td>
-                    <td class="text-nowrap">
-                        <a href="<?= url('admin/biolink-theme-update/' . $row->biolink_theme_id) ?>"><?= $row->name ?></a>
-                    </td>
-                    <td class="text-nowrap">
-                        <?php if($row->is_enabled == 0): ?>
-                        <span class="badge badge-warning"><i class="fa fa-fw fa-sm fa-eye-slash"></i> <?= l('global.disabled') ?>
-                        <?php elseif($row->is_enabled == 1): ?>
-                        <span class="badge badge-success"><i class="fa fa-fw fa-sm fa-check"></i> <?= l('global.active') ?>
-                        <?php endif ?>
-                    </td>
-                    <td class="text-nowrap">
-                        <span class="text-muted" data-toggle="tooltip" title="<?= \Altum\Date::get($row->datetime, 1) ?>">
-                            <?= \Altum\Date::get($row->datetime, 2) ?>
-                        </span>
-                    </td>
-                    <td>
-                        <div class="d-flex justify-content-end">
-                            <?= include_view(THEME_PATH . 'views/admin/biolinks-themes/admin_biolink_theme_dropdown_button.php', ['id' => $row->biolink_theme_id, 'resource_name' => $row->name]) ?>
-                        </div>
-                    </td>
-                </tr>
-            <?php endforeach ?>
+                <?php foreach ($data->biolinks_themes as $row) : ?>
+                    <?php //ALTUMCODE:DEMO if(DEMO) {$row->user_email = 'hidden@demo.com'; $row->user_name = 'hidden on demo';} 
+                    ?>
+                    <tr>
+                        <td data-bulk-table class="d-none">
+                            <div class="custom-control custom-checkbox">
+                                <input id="selected_biolink_theme_id_<?= $row->biolink_theme_id ?>" type="checkbox" class="custom-control-input" name="selected[]" value="<?= $row->biolink_theme_id ?>" />
+                                <label class="custom-control-label" for="selected_biolink_theme_id_<?= $row->biolink_theme_id ?>"></label>
+                            </div>
+                        </td>
+                        <td class="text-nowrap">
+                            <a href="<?= url('admin/biolink-theme-update/' . $row->biolink_theme_id) ?>"><?= $row->name ?></a>
+                        </td>
+                        <td class="text-nowrap">
+                            <?php if ($row->is_enabled == 0) : ?>
+                                <span class="badge badge-warning"><i class="fa fa-fw fa-sm fa-eye-slash"></i> <?= l('global.disabled') ?>
+                                <?php elseif ($row->is_enabled == 1) : ?>
+                                    <span class="badge badge-success"><i class="fa fa-fw fa-sm fa-check"></i> <?= l('global.active') ?>
+                                    <?php endif ?>
+                        </td>
+                        <td class="text-nowrap">
+                            <?php if ($row->company_name) : ?>
+                                <span class="">
+                                    <?= $row->company_name ?>
+                                </span>
+                            <?php else : ?>
+                                <span class="text-muted">
+                                    -
+                                </span>
+                            <?php endif ?>
+                        </td>
+                        <td class="text-nowrap">
+                            <span class="text-muted" data-toggle="tooltip" title="<?= \Altum\Date::get($row->datetime, 1) ?>">
+                                <?= \Altum\Date::get($row->datetime, 2) ?>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-end">
+                                <?= include_view(THEME_PATH . 'views/admin/biolinks-themes/admin_biolink_theme_dropdown_button.php', ['id' => $row->biolink_theme_id, 'resource_name' => $row->name]) ?>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
 
             </tbody>
         </table>

@@ -3,21 +3,22 @@
 <section class="container">
     <?= \Altum\Alerts::output_alerts() ?>
 
-    <div class="row mb-4">
-        <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0">
-            <h1 class="h4 m-0"><?= $data->company->name ?></h1>
-
-            <div class="ml-2">
-                <span data-toggle="tooltip" title="<?= l('company.name') ?>">
-                    <i class="fa fa-fw fa-info-circle text-muted"></i>
-                </span>
+    <?php if ($data->company) : ?>
+        <div class="row mb-4">
+            <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0">
+                <h1 class="h4 m-0"><?= $data->company->name ?></h1>
+                <div class="ml-2">
+                    <span data-toggle="tooltip" title="<?= l('company.name') ?>">
+                        <i class="fa fa-fw fa-info-circle text-muted"></i>
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
+    <?php endif ?>
 
     <div class="row mb-4">
         <div class="col-md-12">
-            <?php if (!$data->isCompanyAdmin) { ?>
+            <?php if (!$data->company) { ?>
                 <p class="text-center"><?= l('company.no_company_data') ?></p>
                 <div class="text-center">
                     <button type="button" data-toggle="modal" data-target="#create_company_modal" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.create') ?></button>
@@ -25,14 +26,16 @@
             <?php } else { ?>
                 <div class="d-flex justify-content-between">
                     <p><?= l('company.employees') ?></p>
-                    <div>
-                        <?php if (isset($data->biolinks->id)) { ?>
-                            <a href="<?= url('biolink-template/' . $biolinks->id) ?>" class="btn btn-outline-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.biolink_template_update.menu') ?></a>
-                        <?php } else { ?>
-                            <a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#create_biolink_template" data-company_id="<?= $data->company->id ?>"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.biolink_template_create.menu') ?></a>
-                        <?php } ?>
-                        <button type="button" data-toggle="modal" data-target="#add_employee_modal" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.add_employee') ?></button>
-                    </div>
+                    <?php if ($data->isGlobalOwner || $data->isCompanyAdmin) : ?>
+                        <div>
+                            <?php if (isset($data->companyTemplate->biolink_theme_id)) { ?>
+                                <a href="<?= url('biolink-theme-create/update/' . $data->companyTemplate->biolink_theme_id) ?>" class="btn btn-primary mr-2"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.biolink_template_update.menu') ?></a>
+                            <?php } else { ?>
+                                <a href="<?= url('biolink-theme-create/' . $data->company->id) ?>" class="btn btn-primary mr-2"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.biolink_template_create.menu') ?></a>
+                            <?php } ?>
+                            <button type="button" data-toggle="modal" data-target="#add_employee_modal" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.add_employee') ?></button>
+                        </div>
+                    <?php endif ?>
                 </div>
             <?php } ?>
         </div>

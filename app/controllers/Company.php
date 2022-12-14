@@ -19,45 +19,46 @@ class Company extends Controller
 
     public function index()
     {
-
         Authentication::guard();
 
-        if (!$this->user->is_global_owner) {
-            redirect();
-        }
+        $data = array();
 
-        $isCompanyAdmin = database()->query("SELECT COUNT(*) AS `total` FROM `companies` WHERE `user_id` = {$this->user->user_id}")->fetch_object()->total ?? 0;
-        $isCompanyEmployee = database()->query("SELECT COUNT(*) AS `total` FROM `company_users` WHERE `user_id` = {$this->user->user_id}")->fetch_object()->total ?? 0;
+        $data['company'] = '';
+        $data['companyEmployees'] = array();
+        $data['companyTemplate'] = array();
+        $data['isCompanyAdmin'] = false;
+        $data['isCompanyEmployee'] = false;
+        $data['isGlobalOwner'] = $this->user->is_global_owner;
 
-        if (!$isCompanyAdmin) {
+        $data['company'] = db()->where('user_id', $this->user->user_id)->getOne('companies');
+
+        if ($data['company']) {
+            $data['isGlobalOwner'] = true;
         } else {
-            $company = db()->where('user_id', $this->user->user_id)->getOne('companies');
+            $employeeCheck = db()->where('user_id', $this->user->user_id)->getOne('company_users');
 
-            /* Get the pixels list for the user */
-            $companyEmployees = [];
-            $companyEmployees_result = database()->query("SELECT * FROM `company_users` LEFT JOIN users ON users.user_id = company_users.user_id WHERE `company_id` = {$company->id}");
-            while ($row = $companyEmployees_result->fetch_object()) $companyEmployees[] = $row;
+            if ($employeeCheck) {
+                $data['company'] = db()->where('id', $employeeCheck->company_id)->getOne('companies');
+                $data['isCompanyEmployee'] = true;
+
+                if ($employeeCheck->is_admin)
+                    $data['isCompanyAdmin'] = true;
+            }
         }
 
-        $biolinks = db()->where('company_id', $company->id)->getOne('links');
+        if (!($data['isGlobalOwner'] || $data['isCompanyEmployee'])) {
+            Alerts::add_error(l('global.error_message.cant_access_company_page'));
+            redirect('dashboard');
+        }
 
-        /* Create Link Modal */
-        $domains = (new Domain())->get_domains($this->user);
-        $data = [
-            'domains' => $domains
-        ];
+        if ($data['company']) {
+            $response = database()->query("SELECT * FROM `company_users` LEFT JOIN users ON users.user_id = company_users.user_id WHERE `company_id` = {$data['company']->id}");
+            while ($row = $response->fetch_object()) $data['companyEmployees'][] = $row;
 
-        $view = new \Altum\Views\View('links/create_link_modals', (array) $this);
-        \Altum\Event::add_content($view->run($data), 'modals');
+            $data['companyTemplate'] = db()->where('company_id', $data['company']->id)->getOne('company_templates');
+        }
 
-        /* Prepare the View */
-        $data = [
-            'isCompanyAdmin'    => $isCompanyAdmin,
-            'isCompanyEmployee' => $isCompanyEmployee,
-            'company'           => $company,
-            'companyEmployees'  => $companyEmployees,
-            'biolinks'          => $biolinks
-        ];
+        $data['companyTemplate'] = db()->where('company_id', $data['company']->id)->getOne('biolinks_themes');
 
         $view = new \Altum\Views\View('company/index', (array) $this);
 

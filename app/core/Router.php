@@ -196,7 +196,7 @@ class Router
                 ]
             ],
 
-            'biolink-template' => [
+            'biolink-theme-create' => [
                 'controller' => 'BiolinkTemplate'
             ],
 

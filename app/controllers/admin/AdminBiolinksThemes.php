@@ -29,9 +29,13 @@ class AdminBiolinksThemes extends Controller {
         $biolinks_themes = [];
         $biolinks_themes_result = database()->query("
             SELECT
-                `biolinks_themes`.*
+                `biolinks_themes`.*,`companies`.`name` as company_name
             FROM
                 `biolinks_themes`
+            LEFT JOIN 
+                `companies`
+            ON
+                `companies`.`id`=`biolinks_themes`.`company_id`
             WHERE
                 1 = 1
                 {$filters->get_sql_where('biolinks_themes')}

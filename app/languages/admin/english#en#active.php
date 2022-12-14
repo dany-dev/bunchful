@@ -445,6 +445,7 @@ return [
 	'admin_biolinks_themes.table.is_enabled' => 'Status',
 	'admin_biolinks_themes.table.datetime' => 'Created on',
 	'admin_biolinks_themes.table.image' => 'Preview image',
+	'admin_biolinks_themes.table.company' => 'Company Name',
 	'admin_biolink_theme_create.breadcrumb' => 'Create Bunchful Atlas theme',
 	'admin_biolink_theme_create.title' => 'Create Bunchful Atlas theme',
 	'admin_biolink_theme_create.header' => 'Create Bunchful Atlas theme',
