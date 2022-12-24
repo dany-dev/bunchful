@@ -153,6 +153,8 @@ class CompanyAjax extends Controller
 
             /* Send the email */
             send_mail($_POST['email'], $email_template->subject, $email_template->body);
+            Response::json(sprintf(l('global.invitation.email-send'), '<strong>' . e($_POST['email']) . '</strong>'));
+
         } else {
             $isCompanyAdmin = database()->query("SELECT COUNT(*) AS `total` FROM `companies` WHERE `user_id` = {$user->user_id}")->fetch_object()->total ?? 0;
 
@@ -187,10 +189,6 @@ class CompanyAjax extends Controller
                 Response::json(sprintf(l('global.employee.already-owner'), '<strong>' . e($_POST['email']) . '</strong>'), "error");
             }
         }
-
-
-        print_r($user);
-        die();
 
         Response::json(sprintf(l('global.employee.account-not-found'), '<strong>' . e($_POST['email']) . '</strong>'), "error");
     }

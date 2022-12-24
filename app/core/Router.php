@@ -825,6 +825,10 @@ class Router
                 'controller' => 'AdminProducts'
             ],
 
+            'companies' => [
+                'controller' => 'AdminCompanies'
+            ],
+
             'qr-codes' => [
                 'controller' => 'AdminQrCodes'
             ],

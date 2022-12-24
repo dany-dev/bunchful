@@ -36,13 +36,13 @@
 
                 <div class="form-group">
                     <label for="image"><?= l('biolinks_themes.table.image') ?></label>
-                    <input id="image" type="file" name="image" accept="<?= \Altum\Uploads::get_whitelisted_file_extensions_accept('biolinks_themes') ?>" class="form-control-file altum-file-input" />
+                    <input id="image" type="file" name="image" required="required" accept="<?= \Altum\Uploads::get_whitelisted_file_extensions_accept('biolinks_themes') ?>" class="form-control-file altum-file-input" />
                     <small class="form-text text-muted"><?= sprintf(l('global.accessibility.whitelisted_file_extensions'), \Altum\Uploads::get_whitelisted_file_extensions_accept('biolinks_themes')) ?></small>
                 </div>
 
                 <div class="form-group">
                     <label for="company_logo"><?= l('biolinks_themes.table.company_logo') ?></label>
-                    <input id="company_logo" type="file" name="company_logo" accept="<?= \Altum\Uploads::get_whitelisted_file_extensions_accept('biolinks_themes') ?>" class="form-control-file altum-file-input" />
+                    <input id="company_logo" type="file" name="company_logo" required="required" accept="<?= \Altum\Uploads::get_whitelisted_file_extensions_accept('biolinks_themes') ?>" class="form-control-file altum-file-input" />
                     <small class="form-text text-muted"><?= sprintf(l('global.accessibility.whitelisted_file_extensions'), \Altum\Uploads::get_whitelisted_file_extensions_accept('biolinks_themes')) ?></small>
                 </div>
 

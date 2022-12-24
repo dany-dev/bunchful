@@ -22,6 +22,11 @@
     </div>
 
     <div class="form-group">
+        <label for="homepage_video"><i class="fa fa-fw fa-sm fa-heading text-muted mr-1"></i> <?= l('admin_settings.main.homepage_video') ?></label>
+        <input id="homepage_video" type="text" name="homepage_video" class="form-control form-control-lg" value="<?= settings()->main->homepage_video ?>" />
+    </div>
+
+    <div class="form-group">
         <label for="logo_light"><i class="fa fa-fw fa-sm fa-sun text-muted mr-1"></i> <?= l('admin_settings.main.logo_light') ?></label>
         <?php if(!empty(settings()->main->logo_light)): ?>
             <div class="m-1">

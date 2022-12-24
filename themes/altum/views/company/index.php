@@ -33,7 +33,10 @@
                             <?php } else { ?>
                                 <a href="<?= url('biolink-theme-create/' . $data->company->id) ?>" class="btn btn-primary mr-2"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.biolink_template_create.menu') ?></a>
                             <?php } ?>
-                            <button type="button" data-toggle="modal" data-target="#add_employee_modal" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.add_employee') ?></button>
+                            <button type="button" data-toggle="modal" data-target="#add_employee_modal" class="btn btn-primary mr-2"><i class="fa fa-fw fa-plus-circle"></i> <?= l('company.add_employee') ?></button>
+                            <a href="#" data-toggle="modal" data-target="#company_delete_modal" data-id="<?= $data->company->id ?>" data-resource-name="<?= $data->company->name ?> Company" class="btn btn-danger">
+                                <i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('company.delete') ?>
+                            </a>
                         </div>
                     <?php endif ?>
                 </div>
@@ -57,27 +60,29 @@
                     </div>
 
                     <div class="col-2 col-lg-2 d-none d-lg-flex justify-content-center justify-content-lg-end align-items-center">
-                        <small class="text-muted" data-toggle="tooltip" title="<?= \Altum\Date::get($row->created_at, 1) ?>"><i class="fa fa-fw fa-calendar fa-sm mr-1"></i> <span class="align-middle"><?= \Altum\Date::get($row->created_at, 2) ?></span></small>
+                        <small class="text-muted" data-toggle="tooltip" title="<?= \Altum\Date::get($row->datetime, 1) ?>"><i class="fa fa-fw fa-calendar fa-sm mr-1"></i> <span class="align-middle"><?= \Altum\Date::get($row->datetime, 2) ?></span></small>
                     </div>
+                    <?php if ($data->isGlobalOwner || $data->isCompanyAdmin) : ?>
+                        <div class="col-2 col-lg-2 d-flex justify-content-center justify-content-lg-end align-items-center">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport">
+                                    <i class="fa fa-fw fa-ellipsis-v"></i>
+                                </button>
 
-                    <div class="col-2 col-lg-2 d-flex justify-content-center justify-content-lg-end align-items-center">
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport">
-                                <i class="fa fa-fw fa-ellipsis-v"></i>
-                            </button>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="#" data-toggle="modal" data-target="#employee_details_modal" data-employee-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.details') ?></a>
-                                <a href="#" data-toggle="modal" data-target="#employee_assign_modal" data-employee-id="<?= $row->id ?>" data-employee-admin="<?= $row->is_admin ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>
-                                    <?php if ($row->is_admin) {
-                                        echo l('global.employee.remove.admin');
-                                    } else {
-                                        echo l('global.employee.assign.admin');
-                                    } ?></a>
-                                <a href="#" data-toggle="modal" data-target="#employee_remove_modal" data-employee-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.remove') ?></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="#" data-toggle="modal" data-target="#employee_details_modal" data-employee-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.details') ?></a>
+                                    <a href="#" data-toggle="modal" data-target="#employee_assign_modal" data-employee-id="<?= $row->id ?>" data-employee-admin="<?= $row->is_admin ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>
+                                        <?php if ($row->is_admin) {
+                                            echo l('global.employee.remove.admin');
+                                        } else {
+                                            echo l('global.employee.assign.admin');
+                                        } ?>
+                                    </a>
+                                    <a href="#" data-toggle="modal" data-target="#employee_remove_modal" data-employee-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.remove') ?></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <?php endif ?>
                 </div>
             </div>
         <?php endforeach ?>
@@ -99,3 +104,10 @@
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/assign_employee_admin_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/remove_employee_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/company/employee_details_modal.php'), 'modals'); ?>
+
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/universal_delete_modal_url.php', [
+    'name' => 'company',
+    'resource_id' => 'id',
+    'has_dynamic_resource_name' => true,
+    'path' => 'company/delete_company/'
+]), 'modals'); ?>

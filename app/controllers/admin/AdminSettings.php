@@ -82,6 +82,7 @@ class AdminSettings extends Controller {
                 'default_language' => $_POST['default_language'],
                 'default_theme_style' => $_POST['default_theme_style'],
                 'default_timezone' => $_POST['default_timezone'],
+                'homepage_video' => $_POST['homepage_video'],
                 'index_url' => $_POST['index_url'],
                 'terms_and_conditions_url' => $_POST['terms_and_conditions_url'],
                 'privacy_policy_url' => $_POST['privacy_policy_url'],

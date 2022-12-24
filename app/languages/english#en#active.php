@@ -2440,6 +2440,7 @@ We donate 10% of sales to charity.',
 	'company.employees' => 'Employees List',
 	'company.add_employee' => 'Add an Employee',
 	'company.input.employee_email' => 'Employee Email',
+	'company.delete' => 'Delete Company',
 	'global.add' => 'Add',
 	'global.employee.already-owner' => 'This email: %s is already a company owner',
 	'global.employee.already-employee' => 'This email: %s is already a company employee',
@@ -2497,4 +2498,5 @@ We donate 10% of sales to charity.',
 	'biolinks_themes.biolink_block' => 'Bunchful Atlas block',
 	'biolink_theme_update.title' => 'Biolink Template',
 	'biolink_theme_update.header' => 'Biolink Template',
+	'biolinks_themes.table.is_enabled' => 'Status'
 ];

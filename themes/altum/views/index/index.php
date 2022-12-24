@@ -31,10 +31,15 @@
                 </button>
                 <!-- 16:9 aspect ratio -->
                 <div class="">
-                    <video style="width:100%;" controls>
-                        <source src="<?= ASSETS_FULL_URL . 'videos/intro.mp4' ?>" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <?php if (settings()->main->homepage_video) : ?>
+                        <?php $link = str_replace("https://www.youtube.com/watch?v=","", settings()->main->homepage_video)?>
+                        <iframe width="100%" height="450" src="https://www.youtube.com/embed/<?= $link ?>?&autoplay=1&enablejsapi=1" title="Bunchful Video" frameborder="0" allowfullscreen></iframe>
+                    <?php else : ?>
+                        <video style="width:100%;" controls>
+                            <source src="<?= ASSETS_FULL_URL . 'videos/intro.mp4' ?>" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -205,15 +210,15 @@
                 </div>
                 <div class="col-md-7">
                     <div class="text-left"><img src="<?= ASSETS_FULL_URL . 'images/border.jpg' ?>"></div>
-                    <h2><?= l('buisness-analytics.header')?></h2>
-                    <p><?= l('buisness-analytics.subheader')?></p>
+                    <h2><?= l('buisness-analytics.header') ?></h2>
+                    <p><?= l('buisness-analytics.subheader') ?></p>
                     <div class="rating-box">
                         <div class="rating-boxes">
-                            <h3><?= l('bunchful-atlas')?></h3>
+                            <h3><?= l('bunchful-atlas') ?></h3>
                             <h4>9+</h4>
                         </div>
                         <div class="rating-boxes">
-                            <h3><?= l('tracked-pageviews')?></h3>
+                            <h3><?= l('tracked-pageviews') ?></h3>
                             <h4>588+</h4>
                         </div>
                     </div>
@@ -225,8 +230,8 @@
 
 <section class="testimonial">
     <div class="container">
-        <h2><?= l('testimonial.header')?></h2>
-        <p><?= l('testimonial.subheader')?></p>
+        <h2><?= l('testimonial.header') ?></h2>
+        <p><?= l('testimonial.subheader') ?></p>
         <div class="testimonial-cont">
             <div class="testimonial-box">
                 <img src="<?= ASSETS_FULL_URL . 'images/cheick_keita.jpeg' ?>" style="border-radius: 50%;" alt="" width="50" height="50">
@@ -256,8 +261,8 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <h2><span><?= l('countdown-clock.header')?></span></h2>
-                <p><span><?= l('countdown-clock.subheader')?></span></p>
+                <h2><span><?= l('countdown-clock.header') ?></span></h2>
+                <p><span><?= l('countdown-clock.subheader') ?></span></p>
             </div>
         </div>
     </div>
@@ -278,9 +283,9 @@
     <div class="container">
         <div class="bunchful-box">
             <div class="text-center"><img src="<?= ASSETS_FULL_URL . 'images/border.jpg' ?>"></div>
-            <h2><?= l('bunchful-info.header')?></h2>
-            <h3><?= l('bunchful-info.subheader')?></h3>
-            <p><?= l('bunchful-info.description')?></p>
+            <h2><?= l('bunchful-info.header') ?></h2>
+            <h3><?= l('bunchful-info.subheader') ?></h3>
+            <p><?= l('bunchful-info.description') ?></p>
         </div>
     </div>
 </section>
@@ -310,8 +315,8 @@
     <div class="container">
         <div class="bunchful-box">
             <div class="text-center"><img src="<?= ASSETS_FULL_URL . 'images/border.jpg' ?>"></div>
-            <h2><?= l('bunchful-info-launch.header')?></h2>
-            <p><?= l('bunchful-info-launch.subheader')?></p>
+            <h2><?= l('bunchful-info-launch.header') ?></h2>
+            <p><?= l('bunchful-info-launch.subheader') ?></p>
         </div>
     </div>
 </section>

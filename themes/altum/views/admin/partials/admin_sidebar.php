@@ -98,6 +98,14 @@
                 </div>
             </a>
         </li>
+        <li class="<?= in_array(\Altum\Routing\Router::$controller, ['Companies']) ? 'active' : null ?>">
+            <a class="nav-link d-flex flex-row" href="<?= url('admin/companies') ?>">
+                <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fas fa-building"></i></div>
+                <div class="col">
+                    <span class="d-inline"><?= l('admin_companies.menu') ?></span>
+                </div>
+            </a>
+        </li>
         <li class="<?= in_array(\Altum\Routing\Router::$controller, ['AdminQrCodes']) ? 'active' : null ?>">
             <a class="nav-link d-flex flex-row" href="<?= url('admin/qr-codes') ?>">
                 <div class="col-1 d-flex align-items-center"><i class="fa fa-fw fa-sm fa-qrcode"></i></div>

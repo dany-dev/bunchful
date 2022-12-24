@@ -108,4 +108,35 @@ class Company extends Controller
 
         redirect('pixels');
     }
+
+    public function delete_company()
+    {
+        $company_id = isset($this->params[0]) ? (int) $this->params[0] : null;
+
+        //ALTUMCODE:DEMO if(DEMO) Alerts::add_error('This command is blocked on the demo.');
+
+        if(!Csrf::check('global_token')) {
+            Alerts::add_error(l('global.error_message.invalid_csrf_token'));
+        }
+
+        if(!$company = db()->where('id', $company_id)->getOne('companies', ['id', 'name'])) {
+            redirect('company');
+        }
+
+        if(!Alerts::has_field_errors() && !Alerts::has_errors()) {
+
+            /* Delete the resource */
+            db()->where('company_id', $company->id)->delete('company_users');
+            db()->where('id', $company->id)->delete('companies');
+
+            /* Clear the cache */
+            \Altum\Cache::$adapter->deleteItemsByTag('company_id=' . $company->id);
+
+            /* Set a nice success message */
+            Alerts::add_success(sprintf(l('global.success_message.delete1'), '<strong>' . $company->name . '</strong>'));
+
+        }
+
+        redirect('company');
+    }
 }

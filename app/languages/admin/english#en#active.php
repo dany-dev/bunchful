@@ -524,6 +524,7 @@ return [
 	'admin_settings.main.default_language' => 'Default language',
 	'admin_settings.main.default_language_help' => 'To add more languages, please consult the documentation.',
 	'admin_settings.main.default_theme_style' => 'Default theme style',
+	'admin_settings.main.homepage_video' => 'Homepage Youtube Video URL',
 	'admin_settings.main.logo_light' => 'Logo for light theme',
 	'admin_settings.main.logo_dark' => 'Logo for dark theme',
 	'admin_settings.main.logo_email' => 'Logo for sent emails',
@@ -989,5 +990,13 @@ return [
 	'catalogs.input.description' => 'Description',
 	'catalogs.input.price' => 'Price',
 	'catalogs.input.image' => 'Image(s)',
+	'admin_companies.menu' => 'Companies',
+	'admin_companies.title' => 'Companies',
+	'admin_companies.header' => 'Companies',
+	'admin_companies.table.name' => 'Company',
+	'admin_companies.table.group_owner' => 'Group Owner',
+	'admin_companies.table.users' => 'Users',
+	'admin_companies.table.user_s' => 'User(s)',
+	'admin_companies.table.datetime' => 'Date Time',
 
 ];

@@ -64,7 +64,7 @@
                             <a class="dropdown-item" href="<?= url('catalog') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('catalog.menu') ?></a>
 
 
-                            <?php if ($data->user_data->is_global_owner) : ?>
+                            <?php if ($data->user_data->is_global_owner || isset($data->company->id)) : ?>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="<?= url('company') ?>"><i class="fa fa-fw fa-sm fa-building mr-2"></i> <?= l('company.menu') ?></a>
                             <?php endif ?>

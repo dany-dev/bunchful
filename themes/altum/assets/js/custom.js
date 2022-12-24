@@ -251,16 +251,15 @@ if ($("[data-toggle='tooltip']").length > 0) {
     $("[data-toggle='tooltip']").tooltip();
 }
 
-if ($("#introVideo")) {
+if ($("#introVideo") && $("#introVideo video")) {
     $('#introVideo').on('shown.bs.modal', function (e) {
-        // a poor man's stop video
-        $('#introVideo video').get(0).currentTime = 0;
-        // $("#introVideo video").get(0).play();
+        $("#introVideo iframe")[0].contentWindow.postMessage( '{"event":"command", "func":"playVideo", "args":""}', '*');
     });
 
     $('#introVideo').on('hide.bs.modal', function (e) {
-        // a poor man's stop video
-        $("#introVideo video").get(0).pause();
-        $('#introVideo video').get(0).currentTime = 0;
+        // $("#introVideo video").get(0).pause();
+        // $('#introVideo video').get(0).currentTime = 0;
+        $("#introVideo iframe")[0].contentWindow.postMessage( '{"event":"command", "func":"stopVideo", "args":""}', '*');
+        // $("#introVideo iframe").attr("src", $("#introVideo iframe").attr("src"));
     });
 }

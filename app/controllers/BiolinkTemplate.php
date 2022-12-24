@@ -418,7 +418,6 @@ class BiolinkTemplate extends Controller
                 }
 
                 if (!Alerts::has_field_errors() && !Alerts::has_errors()) {
-
                     /* Generate new name for company_logo */
                     $company_logo_new_name = md5(time() . rand()) . '.' . $file_extension;
 
@@ -459,7 +458,6 @@ class BiolinkTemplate extends Controller
                     $biolink_theme->company_logo = $company_logo_new_name;
                 }
             }
-
             /* Check for the removal of the already uploaded file */
             if (isset($_POST['company_logo_remove'])) {
                 /* Offload deleting */
@@ -593,6 +591,7 @@ class BiolinkTemplate extends Controller
                 db()->where('biolink_theme_id', $biolink_theme_id)->update('biolinks_themes', [
                     'name' => $_POST['name'],
                     'image' => $biolink_theme->image,
+                    'company_logo' => $biolink_theme->company_logo,
                     'settings' => $settings,
                     'is_enabled' => $_POST['is_enabled'],
                     'last_datetime' => \Altum\Date::$date,
@@ -605,7 +604,7 @@ class BiolinkTemplate extends Controller
                 \Altum\Cache::$adapter->deleteItem('biolinks_themes');
 
                 /* Refresh the page */
-                redirect('admin/biolink-theme-update/' . $biolink_theme_id);
+                redirect('biolink-theme-create/update/' . $biolink_theme_id);
             }
         }
 
