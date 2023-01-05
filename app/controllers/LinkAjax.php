@@ -173,6 +173,20 @@ class LinkAjax extends Controller
 
     private function create_biolink()
     {
+        $company = '';
+        $company_user = '';
+        $template = '';
+
+        $company = db()->where('user_id', $this->user->user_id)->getOne('companies');
+        if(!$company) {
+            $company_user = db()->where('user_id', $this->user->user_id)->getOne('company_users');
+            $company = db()->where('id', $company_user->company_id)->getOne('companies');
+        }
+
+        if($company) {
+            $template = db()->where('company_id', $company->id)->getOne('biolinks_themes');
+        }
+
         if (!settings()->links->biolinks_is_enabled) {
             Response::json(l('global.error_message.basic'), 'error');
         }
@@ -247,6 +261,7 @@ class LinkAjax extends Controller
             'url' => $url,
             'settings' => $settings,
             'datetime' => \Altum\Date::$date,
+            'biolink_theme_id' => $template ? $template->biolink_theme_id : null
         ]);
 
         Response::json(l('global.success_message.create2'), 'success', ['url' => url('link/' . $link_id)]);

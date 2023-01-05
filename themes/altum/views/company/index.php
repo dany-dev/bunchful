@@ -46,6 +46,11 @@
 
     <?php if (count($data->companyEmployees)) : ?>
         <?php foreach ($data->companyEmployees as $row) : ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <?php if (count($data->companyEmployees)) : ?>
+        <?php foreach ($data->companyEmployees as $row) : ?>
             <div class="custom-row mb-4" data-id="<?= $row->id ?>">
                 <div class="row">
                     <div class="col-4 col-lg-4 d-flex align-items-center">
@@ -55,12 +60,14 @@
                         </div>
                     </div>
 
-                    <div class="col-4 col-lg-4 d-flex align-items-center">
+                    <div class="col-3 col-lg-3 d-flex align-items-center">
                         <a><?= $row->name ?></a>
                     </div>
-
                     <div class="col-2 col-lg-2 d-none d-lg-flex justify-content-center justify-content-lg-end align-items-center">
                         <small class="text-muted" data-toggle="tooltip" title="<?= \Altum\Date::get($row->datetime, 1) ?>"><i class="fa fa-fw fa-calendar fa-sm mr-1"></i> <span class="align-middle"><?= \Altum\Date::get($row->datetime, 2) ?></span></small>
+                    </div>
+                    <div class="col-1 col-lg-1 d-none d-lg-flex justify-content-center justify-content-lg-end align-items-center">
+                        <a href="<?= url('biolink-theme-create/' . $data->company->id) ?>" class="btn btn-primary">Pay</a>
                     </div>
                     <?php if ($data->isGlobalOwner || $data->isCompanyAdmin) : ?>
                         <div class="col-2 col-lg-2 d-flex justify-content-center justify-content-lg-end align-items-center">
@@ -68,7 +75,6 @@
                                 <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport">
                                     <i class="fa fa-fw fa-ellipsis-v"></i>
                                 </button>
-
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a href="#" data-toggle="modal" data-target="#employee_details_modal" data-employee-id="<?= $row->id ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.details') ?></a>
                                     <a href="#" data-toggle="modal" data-target="#employee_assign_modal" data-employee-id="<?= $row->id ?>" data-employee-admin="<?= $row->is_admin ?>" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>

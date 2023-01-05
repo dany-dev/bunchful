@@ -26,6 +26,8 @@ class Link extends Controller {
 
         $link_id = isset($this->params[0]) ? (int) $this->params[0] : null;
         $method = isset($this->params[1]) && in_array($this->params[1], ['settings', 'statistics']) ? $this->params[1] : 'settings';
+        $company_id = '';
+        $company = '';
 
         /* Make sure the link exists and is accessible to the user */
         if(!$this->link = db()->where('link_id', $link_id)->where('user_id', $this->user->user_id)->getOne('links')) {
@@ -468,6 +470,14 @@ class Link extends Controller {
 
         }
 
+        $company_id = db()->where('biolink_theme_id', $this->link->biolink_theme_id)->getOne('biolinks_themes')->company_id;
+        if($company_id) {
+            $company = db()->where('id', $company_id)->getOne('companies');
+        }
+        
+        $data['company_id'] = $company_id;
+        $data['company'] = $company;
+
         /* Delete Modal */
         $view = new \Altum\Views\View('links/link_delete_modal', (array) $this);
         \Altum\Event::add_content($view->run(), 'modals');
@@ -482,9 +492,9 @@ class Link extends Controller {
 
         /* Prepare the View */
         $data = [
-            'link' => $this->link,
-            'method' => $method,
-            'links_types' => $links_types,
+            'link'        => $this->link,
+            'method'      => $method,
+            'links_types' => $links_types
         ];
 
         $view = new \Altum\Views\View('link/index', (array) $this);

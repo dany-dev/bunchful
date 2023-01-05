@@ -69,7 +69,7 @@
                             <div id="packageCollapseFree" class="collapse" aria-labelledby="package0" data-parent="#packageFree">
                                 <div>
                                     <ul class="silver">
-                                        <?php $plan->settings = json_decode($plan->settings) ?>
+                                        <?php if(isset($plan->settings)) $plan->settings = json_decode($plan->settings) ?>
                                         <?= include_view(THEME_PATH . 'views/partials/plans_plan_content.php', ['plan_settings' => settings()->plan_free->settings]) ?>
                                         <li class="pricingtable__btn">
                                             <a href="<?= url('register') ?>" class="<?= \Altum\Middlewares\Authentication::check() && $this->user->plan_id != 'free' ? 'disabled' : null ?>"><?= l('plan.button.choose') ?></a>

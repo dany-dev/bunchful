@@ -164,7 +164,7 @@
                             </div>
                         </td>
                         <td class="text-nowrap">
-                            <button class="btn btn-primary"><?= count($row->users) ?> <?= l('admin_companies.table.user_s') ?></button>
+                            <a class="btn btn-primary show-users" data-target="<?= $row->id ?>"><?= count($row->users) ?> <?= l('admin_companies.table.user_s') ?></a>
                         </td>
                         <td class="text-nowrap">
                             <span class="text-muted" data-toggle="tooltip" title="<?= \Altum\Date::get($row->datetime, 1) ?>">
@@ -178,7 +178,6 @@
                         </td>
                     </tr>
                 <?php endforeach ?>
-
             </tbody>
         </table>
     </div>
@@ -188,6 +187,7 @@
 
 <?php require THEME_PATH . 'views/admin/partials/js_bulk.php' ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/admin/partials/bulk_delete_modal.php'), 'modals'); ?>
+<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/admin/companies/user_list_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/universal_delete_modal_url.php', [
     'name' => 'company',
     'resource_id' => 'company_id',

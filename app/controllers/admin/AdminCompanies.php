@@ -11,10 +11,10 @@ namespace Altum\Controllers;
 
 use Altum\Alerts;
 use Altum\Middlewares\Csrf;
+use Altum\Response;
 
 class AdminCompanies extends Controller
 {
-
     public function index()
     {
         /* Prepare the filtering system */
@@ -55,6 +55,7 @@ class AdminCompanies extends Controller
                     `company_users`
                 LEFT JOIN
                     `users` ON `company_users`.`user_id` = `users`.`user_id`
+                WHERE `company_users`.`company_id` = {$value->id}
             ");
             $companies[$key]->users = [];
             while ($row = $company_users_result->fetch_object()) {
@@ -75,10 +76,6 @@ class AdminCompanies extends Controller
             'filters' => $filters,
             'pagination' => $pagination
         ];
-
-        // echo "<pre>";
-        // print_r($data);
-        // die();
 
         $view = new \Altum\Views\View('admin/companies/index', (array) $this);
 
@@ -130,21 +127,21 @@ class AdminCompanies extends Controller
         redirect('admin/pixels');
     }
 
-    public function delete() {
-
+    public function delete()
+    {
         $company_id = isset($this->params[0]) ? (int) $this->params[0] : null;
 
         //ALTUMCODE:DEMO if(DEMO) Alerts::add_error('This command is blocked on the demo.');
 
-        if(!Csrf::check('global_token')) {
+        if (!Csrf::check('global_token')) {
             Alerts::add_error(l('global.error_message.invalid_csrf_token'));
         }
 
-        if(!$company = db()->where('id', $company_id)->getOne('companies', ['id', 'name'])) {
+        if (!$company = db()->where('id', $company_id)->getOne('companies', ['id', 'name'])) {
             redirect('admin/companies');
         }
 
-        if(!Alerts::has_field_errors() && !Alerts::has_errors()) {
+        if (!Alerts::has_field_errors() && !Alerts::has_errors()) {
 
             /* Delete the resource */
             db()->where('company_id', $company->id)->delete('company_users');
@@ -155,9 +152,36 @@ class AdminCompanies extends Controller
 
             /* Set a nice success message */
             Alerts::add_success(sprintf(l('global.success_message.delete1'), '<strong>' . $company->name . '</strong>'));
-
         }
 
         redirect('admin/companies');
+    }
+
+    public function get_users()
+    {
+        $company_id = isset($this->params[0]) ? (int) $this->params[0] : null;
+        $company_users = [];
+
+        if(isset($company_id) && $company_id) {
+            $company = db()->where('id', $company_id)->getOne('companies');
+            $result = database()->query("
+                SELECT
+                    `company_users`.*, `users`.`name` AS `user_name`, `users`.`email` AS `user_email`
+                FROM
+                    `company_users`
+                LEFT JOIN
+                    `users` ON `company_users`.`user_id` = `users`.`user_id`
+                WHERE
+                    1 = 1 AND `company_users`.`company_id` = {$company_id}");
+    
+            while ($row = $result->fetch_object()) {
+                $company_users[] = $row;
+            }
+            $company->users = $company_users;
+    
+            Response::json(l('success'), 'success', $company);
+        }
+
+        Response::json(l('global.info_message.team_no_access'), 'error');
     }
 }

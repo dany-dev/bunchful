@@ -34,7 +34,7 @@
 <div class="admin-container">
     <?= $this->views['admin_sidebar'] ?>
 
-    <section class="admin-content altum-animate altum-animate-fill-none altum-animate-fade-in">
+    <section class="admin-content altum-animate altum-animate-fill-none altum-animate-fade-in mb-6">
         <?= $this->views['admin_menu'] ?>
 
         <div class="p-3 p-lg-5 position-relative">
@@ -49,7 +49,7 @@
 
 <?php require THEME_PATH . 'views/partials/js_global_variables.php' ?>
 
-<?php foreach(['libraries/jquery.slim.min.js', 'libraries/popper.min.js', 'libraries/bootstrap.min.js', 'custom.js', 'libraries/fontawesome.min.js', 'libraries/fontawesome-solid.min.js', 'libraries/fontawesome-brands.modified.js'] as $file): ?>
+<?php foreach(['libraries/jquery.min.js', 'libraries/popper.min.js', 'libraries/bootstrap.min.js', 'custom.js', 'libraries/fontawesome.min.js', 'libraries/fontawesome-solid.min.js', 'libraries/fontawesome-brands.modified.js'] as $file): ?>
     <script src="<?= ASSETS_FULL_URL ?>js/<?= $file ?>?v=<?= PRODUCT_CODE ?>"></script>
 <?php endforeach ?>
 

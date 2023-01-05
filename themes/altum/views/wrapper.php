@@ -70,7 +70,7 @@
 
         <?php require THEME_PATH . 'views/partials/ads_header.php' ?>
 
-        <main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+        <main class="altum-animate altum-animate-fill-none altum-animate-fade-in mb-6">
             <?= $this->views['content'] ?>
         </main>
 

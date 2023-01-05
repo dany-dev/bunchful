@@ -244,7 +244,7 @@ class BiolinkTemplate extends Controller
                 /* Clear the cache */
                 \Altum\Cache::$adapter->deleteItem('biolinks_themes');
 
-                redirect('biolinks-themes');
+                redirect('company');
             }
         }
 
@@ -604,7 +604,7 @@ class BiolinkTemplate extends Controller
                 \Altum\Cache::$adapter->deleteItem('biolinks_themes');
 
                 /* Refresh the page */
-                redirect('biolink-theme-create/update/' . $biolink_theme_id);
+                redirect('company');
             }
         }
 

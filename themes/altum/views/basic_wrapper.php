@@ -46,7 +46,7 @@
 <?php require THEME_PATH . 'views/partials/announcements.php' ?>
 <?php require THEME_PATH . 'views/partials/cookie_consent.php' ?>
 
-<main class="altum-animate altum-animate-fill-none altum-animate-fade-in py-6">
+<main class="altum-animate altum-animate-fill-none altum-animate-fade-in py-6 mb-6">
     <div class="container">
         <div class="d-flex flex-column align-items-center">
             <div class="col-xs-12 col-md-10 col-lg-7 col-xl-6">
