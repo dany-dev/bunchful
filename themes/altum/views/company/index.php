@@ -60,14 +60,18 @@
                         </div>
                     </div>
 
-                    <div class="col-3 col-lg-3 d-flex align-items-center">
+                    <div class="col-2 col-lg-2 d-flex align-items-center">
                         <a><?= $row->name ?></a>
                     </div>
                     <div class="col-2 col-lg-2 d-none d-lg-flex justify-content-center justify-content-lg-end align-items-center">
                         <small class="text-muted" data-toggle="tooltip" title="<?= \Altum\Date::get($row->datetime, 1) ?>"><i class="fa fa-fw fa-calendar fa-sm mr-1"></i> <span class="align-middle"><?= \Altum\Date::get($row->datetime, 2) ?></span></small>
                     </div>
-                    <div class="col-1 col-lg-1 d-none d-lg-flex justify-content-center justify-content-lg-end align-items-center">
-                        <a href="<?= url('biolink-theme-create/' . $data->company->id) ?>" class="btn btn-primary">Pay</a>
+                    <div class="col-2 col-lg-2 d-none d-lg-flex justify-content-center align-items-center">
+                        <?php if($this->user->plan_id === $row->plan_id) { ?>
+                            <span class="text-muted">Membership Paid</span>
+                        <?php } else { ?>
+                            <a href="<?= url('pay/' . $this->user->plan_id . '/' . $row->user_id) ?>" class="btn btn-primary">Pay Membership</a>
+                        <?php } ?>
                     </div>
                     <?php if ($data->isGlobalOwner || $data->isCompanyAdmin) : ?>
                         <div class="col-2 col-lg-2 d-flex justify-content-center justify-content-lg-end align-items-center">

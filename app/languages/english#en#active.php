@@ -350,6 +350,7 @@ return [
 	'pay.breadcrumb' => '%s plan',
 	'pay.title' => 'Pay - %s',
 	'pay.plan_details' => 'What you\'ll get',
+	'pay.plan_details_specific' => 'What %s get',
 	'pay.accept' => 'By continuing with your order you confirm that you read, understand & agree to the %1$s and %2$s of the site.',
 	'pay.free.free_already' => 'You already have the free plan activated.',
 	'pay.free.other_plan_not_expired' => 'Your current plan is not expired yet, you will get the free plan after it expires.',

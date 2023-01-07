@@ -18,7 +18,6 @@ class Index extends Controller
 
     public function index()
     {
-
         /* Custom index redirect if set */
         if (!empty(settings()->main->index_url)) {
             header('Location: ' . settings()->main->index_url);

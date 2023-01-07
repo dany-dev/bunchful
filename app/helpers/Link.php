@@ -79,6 +79,7 @@ class Link {
         $data = [
             'link'  => $link,
             'user'  => $user,
+            'biolink_theme'  => $tthis->biolink_theme,
             'biolink_blocks' => $biolink_blocks
         ];
 

@@ -29,6 +29,7 @@ class Link extends Controller {
     public $link = null;
     public $type;
     public $user;
+    public $biolink_theme;
     public $is_preview = false;
 
     public function index() {
@@ -393,6 +394,13 @@ class Link extends Controller {
             /* Prepare the pixels view */
             $pixels_view = new \Altum\Views\View('l/partials/pixels');
             $this->add_view_content('pixels', $pixels_view->run(['pixels' => $pixels, 'type' => 'biolink']));
+        }
+
+        $this->biolinks_themes = (new \Altum\Models\BiolinkTheme())->get_biolinks_themes();
+        $this->biolink_theme = isset($this->link->biolink_theme_id) && array_key_exists($this->link->biolink_theme_id, $this->biolinks_themes) ? $this->biolinks_themes[$this->link->biolink_theme_id] : null;
+
+        if($this->biolink_theme && isset($this->biolink_theme->company_id) && $this->biolink_theme->company_id) {
+            $this->biolink_theme->company = db()->where('id', $this->biolink_theme->company_id)->getOne('companies');
         }
 
         /* Prepare the View */

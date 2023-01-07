@@ -21,12 +21,16 @@ use Altum\PaymentGateways\Paystack;
 use Altum\Response;
 use Altum\Title;
 use Altum\Uploads;
+use Carbon\Carbon;
 use Razorpay\Api\Api;
 
 class Pay extends Controller
 {
     public $plan_id;
+    public $user_id;
+    public $employee;
     public $return_type;
+    public $payment_id;
     public $payment_processor;
     public $plan;
     public $plan_taxes;
@@ -45,7 +49,9 @@ class Pay extends Controller
 
         $payment_processors = require APP_PATH . 'includes/payment_processors.php';
         $this->plan_id = isset($this->params[0]) ? $this->params[0] : null;
+        $this->user_id = isset($this->params[1]) ? $this->params[1] : null;
         $this->return_type = isset($_GET['return_type']) && in_array($_GET['return_type'], ['success', 'cancel']) ? $_GET['return_type'] : null;
+        $this->payment_id = isset($_GET['payment_id']) ? $_GET['payment_id'] : null;
         $this->payment_processor = isset($_GET['payment_processor']) && array_key_exists($_GET['payment_processor'], $payment_processors) ? $_GET['payment_processor'] : null;
 
         /* ^_^ */
@@ -205,7 +211,7 @@ class Pay extends Controller
                     $plan_settings = json_encode($this->plan->settings);
 
                     /* Database query */
-                    db()->where('user_id', $this->user->user_id)->update('users', [
+                    db()->where('user_id', $this->user_id ? $this->user_id : $this->user->user_id)->update('users', [
                         'plan_id' => $this->plan_id,
                         'plan_settings' => $plan_settings,
                         'plan_expiration_date' => $plan_expiration_date,
@@ -213,7 +219,7 @@ class Pay extends Controller
                     ]);
 
                     /* Clear the cache */
-                    \Altum\Cache::$adapter->deleteItemsByTag('user_id=' . $this->user->user_id);
+                    \Altum\Cache::$adapter->deleteItemsByTag('user_id=' . $this->user_id ? $this->user_id : $this->user->user_id);
 
                     /* Success message and redirect */
                     $this->redirect_pay_thank_you();
@@ -260,9 +266,17 @@ class Pay extends Controller
         /* Set a custom title */
         Title::set(sprintf(l('pay.title'), $this->plan->name));
 
+        if ($this->user_id) {
+            $this->employee = db()->where('user_id', $this->user_id)->getOne('users');
+        } else {
+            $this->employee = null;
+        }
+
         /* Prepare the View */
         $data = [
             'plan_id'           => $this->plan_id,
+            'user_id'           => $this->user_id,
+            'employee'           => $this->employee,
             'plan'              => $this->plan,
             'plan_taxes'        => $this->plan_taxes,
             'payment_processors' => $payment_processors,
@@ -474,6 +488,8 @@ class Pay extends Controller
         /* Final price */
         $stripe_formatted_price = in_array(settings()->payment->currency, ['MGA', 'BIF', 'CLP', 'PYG', 'DJF', 'RWF', 'GNF', 'UGX', 'JPY', 'VND', 'VUV', 'XAF', 'KMF', 'KRW', 'XOF', 'XPF']) ? number_format($price, 0, '.', '') : number_format($price, 2, '.', '') * 100;
 
+        $payment_id = md5($this->user->user_id . $this->plan_id . $_POST['payment_type'] . $_POST['payment_frequency'] . $this->user->email . Date::$date);
+
         $price = number_format($price, 2, '.', '');
 
         switch ($_POST['payment_type']) {
@@ -570,12 +586,35 @@ class Pay extends Controller
                         'discount_amount' => $discount_amount,
                         'taxes_ids' => json_encode($this->applied_taxes_ids)
                     ],
-                    'success_url' => url('pay/' . $this->plan_id . $this->return_url_parameters('success', $base_amount, $price, $code, $discount_amount)),
-                    'cancel_url' => url('pay/' . $this->plan_id . $this->return_url_parameters('cancel', $base_amount, $price, $code, $discount_amount)),
+                    'success_url' => url('pay/' . $this->plan_id . $this->return_url_parameters('success', $payment_id, $base_amount, $price, $code, $discount_amount)),
+                    'cancel_url' => url('pay/' . $this->plan_id . $this->return_url_parameters('cancel', $payment_id, $base_amount, $price, $code, $discount_amount)),
                 ]);
 
                 break;
         }
+
+        /* Add a log into the database */
+        db()->insert('payments', [
+            'user_id' => (isset($_POST['user_id']) && $_POST['user_id']) ? $_POST['user_id'] : $this->user->user_id,
+            'plan_id' => $this->plan_id,
+            'processor' => 'stripe',
+            'type' => $_POST['payment_type'],
+            'frequency' => $_POST['payment_frequency'],
+            'code' => $code,
+            'discount_amount' => $discount_amount,
+            'base_amount' => $base_amount,
+            'email' => $this->user->email,
+            'payment_id' => $payment_id,
+            'name' => $this->user->name,
+            'plan' => json_encode(db()->where('plan_id', $this->plan_id)->getOne('plans', ['plan_id', 'name'])),
+            'billing' => settings()->payment->taxes_and_billing_is_enabled && $this->user->billing ? json_encode($this->user->billing) : null,
+            'business' => json_encode(settings()->business),
+            'taxes_ids' => !empty($this->applied_taxes_ids) ? json_encode($this->applied_taxes_ids) : null,
+            'total_amount' => $price,
+            'currency' => settings()->payment->currency,
+            'status' => 0,
+            'datetime' => Date::$date
+        ]);
 
         header('Location: ' . $stripe_session->url);
         die();
@@ -1443,6 +1482,25 @@ class Pay extends Controller
         /* Return confirmation processing if successfully */
         if ($this->return_type && $this->payment_processor && $this->return_type == 'success') {
 
+            if ($this->payment_id) {
+                $payment = db()->where('payment_id', $this->payment_id)->getOne('payments');
+                $plan = db()->where('plan_id', $payment->plan_id)->getOne('plans');
+
+                if ($_GET['payment_frequency'] == 'monthly') {
+                    $plan_expiration_date = (new \DateTime())->modify('+30' . ' days')->format('Y-m-d H:i:s');
+                } else {
+                    $plan_expiration_date = (new \DateTime())->modify('+365' . ' days')->format('Y-m-d H:i:s');
+                }
+
+                db()->where('payment_id', $this->payment_id)->update('payments', ['status' => 1]);
+                db()->where('user_id', $payment->user_id)->update('users', [
+                    'plan_id' => $payment->plan_id,
+                    'plan_settings' => $plan->settings,
+                    'plan_expiration_date' => $plan_expiration_date,
+                    'plan_trial_done' => 1,
+                ]);
+            }
+
             /* Redirect to the thank you page */
             $this->redirect_pay_thank_you();
         }
@@ -1507,10 +1565,12 @@ class Pay extends Controller
     }
 
     /* Generate the generic return url parameters */
-    private function return_url_parameters($return_type, $base_amount, $total_amount, $code, $discount_amount)
+    private function return_url_parameters($return_type, $payment_id, $base_amount, $total_amount, $code, $discount_amount)
     {
         return
             '&return_type=' . $return_type
+            . '&payment_id=' . $payment_id
+            . '&user_id=' . $_POST['user_id']
             . '&payment_processor=' . $_POST['payment_processor']
             . '&payment_frequency=' . $_POST['payment_frequency']
             . '&payment_type=' . $_POST['payment_type']

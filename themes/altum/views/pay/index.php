@@ -30,7 +30,7 @@
         </ol>
     </nav>
 
-    <?php if($data->plan->trial_days && !$this->user->plan_trial_done && !isset($_GET['trial_skip'])): ?>
+    <?php if ($data->plan->trial_days && !$this->user->plan_trial_done && !isset($_GET['trial_skip'])) : ?>
         <h1 class="h3"><?= sprintf(l('pay.trial.header'), $data->plan->name) ?></h1>
         <div class="text-muted mb-5"><?= l('pay.trial.subheader') ?></div>
 
@@ -65,11 +65,13 @@
                 </div>
             </div>
 
-            <div class="row"><div class="col-12 col-xl-8"></div></div>
+            <div class="row">
+                <div class="col-12 col-xl-8"></div>
+            </div>
         </form>
 
 
-    <?php elseif(is_numeric($data->plan_id)): ?>
+    <?php elseif (is_numeric($data->plan_id)) : ?>
 
         <?php
         /* Check for extra savings on the prices */
@@ -86,16 +88,16 @@
             <input type="hidden" name="annual_price" value="<?= $data->plan->annual_price ?>" />
             <input type="hidden" name="lifetime_price" value="<?= $data->plan->lifetime_price ?>" />
             <input type="hidden" name="token" value="<?= \Altum\Middlewares\Csrf::get() ?>" />
+            <?php if ($data->user_id) { ?>
+                <input type="hidden" name="user_id" value="<?= $data->user_id ?>" />
+            <?php } ?>
 
             <div class="row">
                 <div class="col-12 col-xl-8">
-
                     <h2 class="h5 mb-4 text-muted"><i class="fa fa-fw fa-sm fa-box-open mr-1"></i> <?= l('pay.custom_plan.payment_frequency') ?></h2>
-
                     <div>
                         <div class="row d-flex align-items-stretch">
-
-                            <?php if($data->plan->monthly_price): ?>
+                            <?php if ($data->plan->monthly_price) : ?>
                                 <label class="col-12 my-2 custom-radio-box">
                                     <input type="radio" id="monthly_price" name="payment_frequency" value="monthly" class="custom-control-input" required="required">
 
@@ -115,7 +117,7 @@
                                 </label>
                             <?php endif ?>
 
-                            <?php if($data->plan->annual_price): ?>
+                            <?php if ($data->plan->annual_price) : ?>
                                 <label class="col-12 my-2 custom-radio-box">
                                     <input type="radio" id="annual_price" name="payment_frequency" value="annual" class="custom-control-input" required="required">
 
@@ -124,7 +126,7 @@
                                             <div class="card-title mb-0"><?= l('pay.custom_plan.annual') ?></div>
 
                                             <div class="d-flex align-items-center">
-                                                <?php if($data->plan->monthly_price && $annual_price_savings > 0): ?>
+                                                <?php if ($data->plan->monthly_price && $annual_price_savings > 0) : ?>
                                                     <div class="payment-price-savings mr-2">
                                                         <span><?= sprintf(l('pay.custom_plan.annual_savings'), '<span class="badge badge-success">-' . $annual_price_savings, settings()->payment->currency . '</span>') ?></span>
                                                     </div>
@@ -139,7 +141,7 @@
                                 </label>
                             <?php endif ?>
 
-                            <?php if($data->plan->lifetime_price): ?>
+                            <?php if ($data->plan->lifetime_price) : ?>
                                 <label class="col-12 my-2 custom-radio-box">
                                     <input type="radio" id="lifetime_price" name="payment_frequency" value="lifetime" class="custom-control-input" required="required">
 
@@ -168,8 +170,8 @@
 
                     <?php
                     $at_least_one_payment_processor_is_enabled = null;
-                    foreach($data->payment_processors as $key => $value) {
-                        if(settings()->{$key}->is_enabled)  {
+                    foreach ($data->payment_processors as $key => $value) {
+                        if (settings()->{$key}->is_enabled) {
                             $at_least_one_payment_processor_is_enabled = true;
                             break;
                         }
@@ -177,16 +179,16 @@
                     ?>
 
 
-                    <?php if(!$at_least_one_payment_processor_is_enabled): ?>
+                    <?php if (!$at_least_one_payment_processor_is_enabled) : ?>
                         <div class="alert alert-info" role="alert">
                             <?= l('pay.custom_plan.no_processor') ?>
                         </div>
-                    <?php else: ?>
+                    <?php else : ?>
 
                         <div>
                             <div class="row d-flex align-items-stretch">
-                                <?php foreach($data->payment_processors as $key => $value): ?>
-                                    <?php if(settings()->{$key}->is_enabled): ?>
+                                <?php foreach ($data->payment_processors as $key => $value) : ?>
+                                    <?php if (settings()->{$key}->is_enabled) : ?>
                                         <label class="col-12 my-2 custom-radio-box">
                                             <input type="radio" name="payment_processor" value="<?= $key ?>" class="custom-control-input" required="required">
 
@@ -208,7 +210,9 @@
                             <div id="offline_payment_processor_wrapper" style="display: none;">
                                 <div class="form-group mt-4">
                                     <label><?= l('pay.custom_plan.offline_payment_instructions') ?></label>
-                                    <div class="card"><div class="card-body"><?= nl2br(settings()->offline_payment->instructions) ?></div></div>
+                                    <div class="card">
+                                        <div class="card-body"><?= nl2br(settings()->offline_payment->instructions) ?></div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group mt-4">
@@ -265,7 +269,11 @@
                 <div class="mt-5 mt-xl-0 col-12 col-xl-4">
                     <div class="">
                         <div class="mb-5">
-                            <h2 class="h4 mb-4 text-muted"><?= l('pay.plan_details') ?></h2>
+                            <?php if (!$data->user_id) { ?>
+                                <h2 class="h4 mb-4 text-muted"><?= l('pay.plan_details') ?></h2>
+                            <?php } else { ?>
+                                <h2 class="h4 mb-4 text-muted"><?= sprintf(l('pay.plan_details_specific'), $data->employee->name) ?></h2>
+                            <?php } ?>
 
                             <?= (new \Altum\Views\View('partials/plan_features'))->run(['plan_settings' => $data->plan->settings]) ?>
                         </div>
@@ -360,8 +368,8 @@
                                             <?= l('pay.custom_plan.summary.payment_processor') ?>
                                         </span>
 
-                                        <?php foreach($data->payment_processors as $key => $value): ?>
-                                            <?php if(settings()->{$key}->is_enabled): ?>
+                                        <?php foreach ($data->payment_processors as $key => $value) : ?>
+                                            <?php if (settings()->{$key}->is_enabled) : ?>
                                                 <span data-summary-payment-processor="<?= $key ?>" class="d-none">
                                                     <?= l('pay.custom_plan.' . $key) ?>
                                                 </span>
@@ -396,35 +404,35 @@
                                     </div>
 
                                     <div id="summary_taxes">
-                                        <?php if($data->plan_taxes): ?>
-                                            <?php foreach($data->plan_taxes as $row): ?>
+                                        <?php if ($data->plan_taxes) : ?>
+                                            <?php foreach ($data->plan_taxes as $row) : ?>
 
                                                 <div id="summary_tax_id_<?= $row->tax_id ?>" class="d-flex justify-content-between mb-3">
                                                     <div class="d-flex flex-column">
-                                                    <span class="text-muted">
-                                                        <?= $row->name ?>
+                                                        <span class="text-muted">
+                                                            <?= $row->name ?>
 
-                                                        <span data-toggle="tooltip" title="<?= $row->description ?>"><i class="fa fa-fw fa-sm fa-question-circle"></i></span>
-                                                    </span>
+                                                            <span data-toggle="tooltip" title="<?= $row->description ?>"><i class="fa fa-fw fa-sm fa-question-circle"></i></span>
+                                                        </span>
                                                         <small class="text-muted">
                                                             <?= l('pay.custom_plan.summary.' . ($row->type == 'inclusive' ? 'tax_inclusive' : 'tax_exclusive')) ?>
                                                         </small>
                                                     </div>
 
                                                     <span>
-                                                    <?php if($row->value_type == 'percentage'): ?>
+                                                        <?php if ($row->value_type == 'percentage') : ?>
 
-                                                        <span class="tax-value"></span>
-                                                        <span class="text-muted"><?= settings()->payment->currency ?></span>
-                                                        <span class="tax-details text-muted">(<?= $row->value ?>%)</span>
+                                                            <span class="tax-value"></span>
+                                                            <span class="text-muted"><?= settings()->payment->currency ?></span>
+                                                            <span class="tax-details text-muted">(<?= $row->value ?>%)</span>
 
-                                                    <?php elseif($row->value_type == 'fixed'): ?>
+                                                        <?php elseif ($row->value_type == 'fixed') : ?>
 
-                                                        <span class="tax-value"></span>
-                                                        <span class="tax-details"><?= '+' . $row->value ?> <span class="text-muted"><?= settings()->payment->currency ?></span></span>
+                                                            <span class="tax-value"></span>
+                                                            <span class="tax-details"><?= '+' . $row->value ?> <span class="text-muted"><?= settings()->payment->currency ?></span></span>
 
-                                                    <?php endif ?>
-                                                </span>
+                                                        <?php endif ?>
+                                                    </span>
                                                 </div>
 
                                             <?php endforeach ?>
@@ -432,7 +440,7 @@
                                     </div>
                                 </div>
 
-                                <?php if(settings()->payment->codes_is_enabled): ?>
+                                <?php if (settings()->payment->codes_is_enabled) : ?>
                                     <div class="mt-4">
                                         <button type="button" id="code_button" class="btn btn-block btn-outline-secondary border-gray-100"><?= l('pay.custom_plan.code_button') ?></button>
 
@@ -445,7 +453,7 @@
                                         </div>
                                     </div>
 
-                                <?php ob_start() ?>
+                                    <?php ob_start() ?>
                                     <script>
                                         'use strict';
 
@@ -461,7 +469,7 @@
                                             let code = document.querySelector('input[name="code"]').value;
 
                                             /* Reset */
-                                            if(code.trim() == '') {
+                                            if (code.trim() == '') {
                                                 document.querySelector('input[name="code"]').classList.remove('is-invalid');
                                                 document.querySelector('input[name="code"]').classList.remove('is-valid');
                                                 altum.code = null;
@@ -476,21 +484,23 @@
                                             }
 
                                             fetch(`${url}pay/code`, {
-                                                method: 'POST',
-                                                body: JSON.stringify({
-                                                    code, global_token, plan_id: altum.plan_id
-                                                }),
-                                                headers: {
-                                                    'Content-Type': 'application/json; charset=UTF-8'
-                                                }
-                                            })
+                                                    method: 'POST',
+                                                    body: JSON.stringify({
+                                                        code,
+                                                        global_token,
+                                                        plan_id: altum.plan_id
+                                                    }),
+                                                    headers: {
+                                                        'Content-Type': 'application/json; charset=UTF-8'
+                                                    }
+                                                })
                                                 .then(response => {
                                                     return response.ok ? response.json() : Promise.reject(response);
                                                 })
                                                 .then(data => {
                                                     document.querySelector('#code_help').innerHTML = data.message;
 
-                                                    if(data.status == 'success') {
+                                                    if (data.status == 'success') {
                                                         document.querySelector('input[name="code"]').classList.add('is-valid');
                                                         document.querySelector('input[name="code"]').classList.remove('is-invalid');
                                                         document.querySelector('#code_help').classList.add('valid-feedback');
@@ -541,12 +551,11 @@
                                         /* Autofill code field on header query */
                                         let current_url = new URL(window.location.href);
 
-                                        if(current_url.searchParams.get('code')) {
+                                        if (current_url.searchParams.get('code')) {
                                             document.querySelector('#code_button').click();
                                             document.querySelector('input[name="code"]').value = current_url.searchParams.get('code');
                                             check_code();
                                         }
-
                                     </script>
                                     <?php \Altum\Event::add_content(ob_get_clean(), 'javascript') ?>
                                 <?php endif ?>
@@ -608,20 +617,20 @@
     let check_payment_frequency = () => {
         let payment_frequency = document.querySelector('[name="payment_frequency"]:checked')?.value;
 
-        switch(payment_frequency) {
+        switch (payment_frequency) {
             case 'monthly':
 
                 $('#summary_payment_frequency_monthly').show();
                 $('#summary_payment_frequency_annual').hide();
                 $('#summary_payment_frequency_lifetime').hide();
 
-                if(altum.payment_type_one_time_enabled) {
+                if (altum.payment_type_one_time_enabled) {
                     $('#one_time_type_label').show();
                 } else {
                     $('#one_time_type_label').hide();
                 }
 
-                if(altum.payment_type_recurring_enabled) {
+                if (altum.payment_type_recurring_enabled) {
                     $('#recurring_type_label').show();
                 } else {
                     $('#recurring_type_label').hide();
@@ -636,13 +645,13 @@
                 $('#summary_payment_frequency_lifetime').hide();
 
 
-                if(altum.payment_type_one_time_enabled) {
+                if (altum.payment_type_one_time_enabled) {
                     $('#one_time_type_label').show();
                 } else {
                     $('#one_time_type_label').hide();
                 }
 
-                if(altum.payment_type_recurring_enabled) {
+                if (altum.payment_type_recurring_enabled) {
                     $('#recurring_type_label').show();
                 } else {
                     $('#recurring_type_label').hide();
@@ -675,7 +684,7 @@
     let check_payment_processor = () => {
         let payment_processor = document.querySelector('[name="payment_processor"]:checked')?.value;
 
-        if(!payment_processor) {
+        if (!payment_processor) {
             return;
         }
 
@@ -685,12 +694,12 @@
 
         document.querySelector(`[data-summary-payment-processor="${payment_processor}"]`).classList.remove('d-none');
 
-        if(['offline_payment', 'coinbase', 'payu', 'yookassa', 'crypto_com', 'paddle'].includes(payment_processor)) {
+        if (['offline_payment', 'coinbase', 'payu', 'yookassa', 'crypto_com', 'paddle'].includes(payment_processor)) {
             $('#recurring_type_label').hide();
             $('#one_time_type_label').show();
         }
 
-        if(payment_processor == 'offline_payment') {
+        if (payment_processor == 'offline_payment') {
             $('#offline_payment_processor_wrapper').show();
         } else {
             $('#offline_payment_processor_wrapper').hide();
@@ -708,7 +717,7 @@
     $('[name="payment_type"]').on('change', event => {
         let payment_type = document.querySelector('[name="payment_type"]:checked')?.value;
 
-        switch(payment_type) {
+        switch (payment_type) {
             case 'one_time':
 
                 $('#summary_payment_type_one_time').show();
@@ -744,7 +753,7 @@
         document.querySelector('#summary_taxes').classList.remove('d-none');
 
         /* Check for potential discounts */
-        if(altum.code) {
+        if (altum.code) {
             altum.code.discount = parseInt(altum.code.discount);
             let discount_value = parseFloat((price * altum.code.discount / 100).toFixed(2));
 
@@ -755,7 +764,7 @@
             document.querySelector('#summary_discount .discount-value').innerHTML = nr(-discount_value, 2);
 
             /* Check for redeemable code */
-            if(altum.code.type == 'redeemable') {
+            if (altum.code.type == 'redeemable') {
                 document.querySelector('#summary_taxes').classList.add('d-none');
             }
         } else {
@@ -763,21 +772,21 @@
         }
 
         /* Calculate with taxes, if any */
-        if(altum.taxes && altum.code?.type != 'redeemable') {
+        if (altum.taxes && altum.code?.type != 'redeemable') {
 
             /* Check for the inclusives */
             let inclusive_taxes_total_percentage = 0;
 
-            for(let row of altum.taxes) {
-                if(row.type == 'exclusive') continue;
+            for (let row of altum.taxes) {
+                if (row.type == 'exclusive') continue;
 
                 inclusive_taxes_total_percentage += parseInt(row.value);
             }
 
             let total_inclusive_tax = parseFloat((price - (price / (1 + inclusive_taxes_total_percentage / 100))).toFixed(2));
 
-            for(let row of altum.taxes) {
-                if(row.type == 'exclusive') continue;
+            for (let row of altum.taxes) {
+                if (row.type == 'exclusive') continue;
 
                 let percentage_of_total_inclusive_tax = parseInt(row.value) * 100 / inclusive_taxes_total_percentage;
 
@@ -793,15 +802,15 @@
             /* Check for the exclusives */
             let exclusive_taxes_array = [];
 
-            for(let row of altum.taxes) {
-                if(row.type == 'inclusive') continue;
+            for (let row of altum.taxes) {
+                if (row.type == 'inclusive') continue;
 
                 let exclusive_tax = parseFloat((row.value_type == 'percentage' ? price_without_inclusive_taxes * (parseInt(row.value) / 100) : parseFloat(row.value)).toFixed(2));
 
                 exclusive_taxes_array.push(exclusive_tax);
 
                 /* Display the value of the tax */
-                if(row.value_type == 'percentage') {
+                if (row.value_type == 'percentage') {
                     $(`#summary_tax_id_${row.tax_id} .tax-value`).html(`+${nr(exclusive_tax, 2)}`);
                 }
 
@@ -825,11 +834,13 @@
     $('[name="payment_type"]').filter(':visible:first').click();
 </script>
 
-<?php if($data->payment_extra_data && $data->payment_extra_data['payment_processor'] == 'paddle'): ?>
+<?php if ($data->payment_extra_data && $data->payment_extra_data['payment_processor'] == 'paddle') : ?>
     <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
 
     <script>
-        Paddle.Setup({ vendor: <?= settings()->paddle->vendor_id ?> });
+        Paddle.Setup({
+            vendor: <?= settings()->paddle->vendor_id ?>
+        });
         Paddle.Environment.set('<?= settings()->paddle->mode ?>');
 
         Paddle.Checkout.open({

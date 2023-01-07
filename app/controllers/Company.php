@@ -54,11 +54,10 @@ class Company extends Controller
         if ($data['company']) {
             $response = database()->query("SELECT * FROM `company_users` LEFT JOIN users ON users.user_id = company_users.user_id WHERE `company_id` = {$data['company']->id}");
             while ($row = $response->fetch_object()) $data['companyEmployees'][] = $row;
-
-            $data['companyTemplate'] = db()->where('company_id', $data['company']->id)->getOne('company_templates');
+            
+            $data['companyTemplate'] = db()->where('company_id', $data['company']->id)->getOne('biolinks_themes');
         }
-
-        $data['companyTemplate'] = db()->where('company_id', $data['company']->id)->getOne('biolinks_themes');
+        
 
         $view = new \Altum\Views\View('company/index', (array) $this);
 
